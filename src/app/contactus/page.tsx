@@ -1,4 +1,3 @@
-"use client";
 import { useState } from "react";
 import Image from "next/image";
 
@@ -12,11 +11,13 @@ export default function Contactus() {
     message: "",
   });
 
-  const handleChange = (e: any) => {
+  // Proper typing for input / textarea change events
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = async (e: any) => {
+  // Proper typing for form submit event
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setLoading(true);
 
@@ -31,7 +32,7 @@ export default function Contactus() {
 
       alert("Message sent!");
       setForm({ firstName: "", lastName: "", email: "", phone: "", message: "" });
-    } catch (err) {
+    } catch (_err) {
       alert("Something went wrong.");
     }
 
@@ -41,7 +42,6 @@ export default function Contactus() {
   return (
     <div className="min-h-screen bg-[#e7e0f1] flex items-center justify-center py-10 px-4">
       <div className="bg-white rounded-[40px] w-full max-w-6xl grid md:grid-cols-2 overflow-hidden shadow-xl">
-        
         {/* LEFT IMAGE PANEL */}
         <div className="relative h-[600px] md:h-auto">
           <Image
@@ -50,15 +50,11 @@ export default function Contactus() {
             fill
             className="object-cover"
           />
-
           <div className="absolute bottom-10 left-10 text-white max-w-xs">
             <h2 className="text-4xl italic font-serif mb-2">Curls</h2>
             <p className="text-sm opacity-90 leading-relaxed">
               Experience unmatched quality, comfort, and beauty designed
-              Experience unmatched quality, comfort, and beauty designed
             </p>
-
-           
           </div>
         </div>
 
@@ -71,8 +67,6 @@ export default function Contactus() {
           </p>
 
           <form onSubmit={handleSubmit} className="space-y-5">
-            
-            {/* First + Last name */}
             <div className="grid grid-cols-2 gap-4">
               <input
                 name="firstName"
@@ -92,7 +86,6 @@ export default function Contactus() {
               />
             </div>
 
-            {/* Email */}
             <input
               name="email"
               type="email"
@@ -103,7 +96,6 @@ export default function Contactus() {
               required
             />
 
-            {/* Phone */}
             <input
               name="phone"
               value={form.phone}
@@ -113,7 +105,6 @@ export default function Contactus() {
               required
             />
 
-            {/* Message */}
             <textarea
               name="message"
               value={form.message}
@@ -123,7 +114,6 @@ export default function Contactus() {
               required
             />
 
-            {/* Submit Button */}
             <button
               type="submit"
               disabled={loading}

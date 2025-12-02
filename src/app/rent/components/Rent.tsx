@@ -14,6 +14,16 @@ interface BridalHire {
   imageUrl?: string;
 }
 
+interface BlockedBooking {
+  date: string;
+}
+interface Customer {
+  first_name: string;
+  last_name: string;
+  email: string;
+  phone: string;
+}
+
 export default function Rent() {
   const [wigs, setWigs] = useState<BridalHire[]>([]);
   const [loading, setLoading] = useState(true);
@@ -23,6 +33,7 @@ export default function Rent() {
   const [filter, setFilter] = useState("All");
   const [agree, setAgree] = useState(false);
   const [showTerms, setShowTerms] = useState(false);
+  
 
 
   const [customer, setCustomer] = useState({
@@ -34,6 +45,8 @@ export default function Rent() {
 
   const [submitting, setSubmitting] = useState(false);
   const [modalOpen, setModalOpen] = useState(false);
+  const fields: (keyof Customer)[] = ["first_name", "last_name", "email", "phone"];
+
 
   // Fetch wigs
   useEffect(() => {
@@ -60,7 +73,7 @@ export default function Rent() {
           `https://curls-api.onrender.com/bookings/blocked/${selectedWig.id}`
         );
         const data = await res.json();
-        const dates = data.map((b: any) => new Date(b.date + "T00:00:00"));
+        const dates = data.map((b: BlockedBooking) => new Date(b.date + "T00:00:00"));
         setBlockedDates(dates);
       } catch (err) {
         console.error(err);
@@ -116,15 +129,7 @@ export default function Rent() {
         wig.wigName.toLowerCase().includes(filter.toLowerCase())
       );
 
-  if (loading) {
-    return (
-      <div className="flex justify-center items-center h-screen text-gray-600 text-lg">
-        Loading wigs...
-      </div>
-    );
-
-// Add this inside your Rent() component
-useEffect(() => {
+ useEffect(() => {
   if (modalOpen) {
     const prev = document.body.style.overflow;
     document.body.style.overflow = "hidden";
@@ -133,6 +138,17 @@ useEffect(() => {
     };
   }
 }, [modalOpen]);
+ 
+      if (loading) {
+    return (
+      <div className="flex justify-center items-center h-screen text-gray-600 text-lg">
+        Loading wigs...
+      </div>
+    );
+    
+
+// Add this inside your Rent() component
+
 
 
 
@@ -322,27 +338,21 @@ useEffect(() => {
           </div>
 
           {/* Customer form */}
-          <div className="space-y-3 mb-6">
-            {["first_name", "last_name", "email", "phone"].map((field) => (
-              <input
-                key={field}
-                type={field === "email" ? "email" : field === "phone" ? "tel" : "text"}
-                placeholder={
-                  field === "first_name"
-                    ? "First Name"
-                    : field === "last_name"
-                    ? "Last Name"
-                    : field === "email"
-                    ? "Email"
-                    : "Phone Number"
-                }
-                className="border text-gray-600 border-gray-300 rounded-xl p-3 w-full 
-                           text-sm sm:text-base focus:ring-2 focus:ring-[#856e91]"
-                value={(customer as any)[field]}
-                onChange={(e) => setCustomer({ ...customer, [field]: e.target.value })}
-              />
-            ))}
-          </div>
+          {/* Customer form */}
+<div className="space-y-3 mb-6">
+  {fields.map((field) => (
+    <input
+      key={field}
+      type={field === "email" ? "email" : field === "phone" ? "tel" : "text"}
+      placeholder={field.replace("_", " ").replace(/\b\w/g, c => c.toUpperCase())}
+      className="border text-gray-600 border-gray-300 rounded-xl p-3 w-full 
+                 text-sm sm:text-base focus:ring-2 focus:ring-[#856e91]"
+      value={customer[field]}
+      onChange={(e) => setCustomer({ ...customer, [field]: e.target.value })}
+    />
+  ))}
+</div>
+
 
           {/* Pay Button */}
           {/* Terms & Conditions Checkbox */}

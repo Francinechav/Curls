@@ -3,6 +3,13 @@
 import React, { useEffect, useState } from "react";
 import { Search } from "lucide-react";
 
+interface Payment {
+  id: number;
+  amount: number;
+  status: "pending" | "succeeded" | "failed";
+  createdAt: string;
+}
+
 interface Booking {
   id: number;
   bookingDate: string;
@@ -21,9 +28,10 @@ interface Booking {
     description?: string;
   };
   user?: { id: number; email?: string };
-  payments?: any[];
+  payments?: Payment[]; // <-- replace any[] here
   blockedDates?: { date: string; status: string }[];
 }
+
 
 // Hook to detect mobile screens
 function useIsMobile(breakpoint = 640) {

@@ -4,11 +4,37 @@ import { useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import { CheckCircle, Calendar, CreditCard, Package, Info } from "lucide-react";
 
+
+interface SpecialOrder {
+  id: number;
+  first_name: string;
+  last_name: string;
+  email: string;
+  phoneNumber: string;
+  district?: string;
+  totalAmount: number;
+  depositAmount: number;
+  balanceAmount: number;
+  deliveryWindowDays: number;
+  texture: string;
+  colour: string;
+  length: string;
+  description: string;
+}
+
+interface SpecialOrderData {
+  paychangu_status: "success" | "failed";
+  order?: SpecialOrder;
+}
+
+
+
+
 export default function SpecialOrderConfirmation() {
   const searchParams = useSearchParams();
   const txRef = searchParams.get("tx_ref");
 
-  const [orderData, setOrderData] = useState<any>(null);
+  const [orderData, setOrderData] = useState<SpecialOrderData | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -56,6 +82,15 @@ export default function SpecialOrderConfirmation() {
   }
 
   const order = orderData.order;
+
+  if (!order) {
+  return (
+    <div className="flex justify-center items-center h-screen text-gray-600 text-lg">
+      Invalid order data.
+    </div>
+  );
+}
+
 
   return (
     <section className="min-h-screen bg-white py-10 px-4 flex justify-center">

@@ -28,7 +28,8 @@ interface SpecialOrder {
   comments?: string;
 
 }
- 
+
+
 type Texture = "body_wave" | "straight" | "water_wave" | "kinky";
 
 export default function Orders() {
@@ -65,6 +66,11 @@ export default function Orders() {
   highlight: false,
   comments: "",  
 });
+
+ 
+const customerFields: (keyof typeof customer)[] = ["first_name", "last_name", "email", "phone", "district"];
+const specialFields: (keyof SpecialOrder)[] = ["first_name", "last_name", "email", "phone", "district"];
+
 
 const SPECIAL_SHIPPING_FEE = 18000; 
 
@@ -509,40 +515,42 @@ const handleSpecialOrderPay = async () => {
       {/* RIGHT PANEL (FORM — Same Rent Page Style) */}
       <div className="md:w-1/2 p-6 flex flex-col space-y-4 max-h-[80vh] overflow-y-auto">
 
-        {["first_name", "last_name", "email", "phone", "district"].map((field) => (
-          <input
-            key={field}
-            type={
-              field === "email"
-                ? "email"
-                : field === "phone"
-                ? "tel"
-                : "text"
-            }
-            placeholder={
-              field === "first_name"
-                ? "First Name"
-                : field === "last_name"
-                ? "Last Name"
-                : field === "email"
-                ? "Email"
-                : field === "phone"
-                ? "Phone Number"
-                : "Enter Location (District)"
-            }
-            className="border p-3 rounded-xl w-full"
-            value={
-              orderType === "international"
-                ? (customer as any)[field]
-                : (specialOrder as any)[field]
-            }
-            onChange={(e) =>
-              orderType === "international"
-                ? setCustomer({ ...customer, [field]: e.target.value })
-                : setSpecialOrder({ ...specialOrder, [field]: e.target.value })
-            }
-          />
-        ))}
+       {customerFields.map((field) => (
+  <input
+    key={field}
+    type={
+      field === "email"
+        ? "email"
+        : field === "phone"
+        ? "tel"
+        : "text"
+    }
+    placeholder={
+      field === "first_name"
+        ? "First Name"
+        : field === "last_name"
+        ? "Last Name"
+        : field === "email"
+        ? "Email"
+        : field === "phone"
+        ? "Phone Number"
+        : "Enter Location (District)"
+    }
+    className="border p-3 rounded-xl w-full"
+   value={
+  orderType === "international"
+    ? String(customer[field])
+    : String(specialOrder[field as keyof SpecialOrder] ?? "")
+}
+
+    onChange={(e) =>
+      orderType === "international"
+        ? setCustomer({ ...customer, [field]: e.target.value })
+        : setSpecialOrder({ ...specialOrder, [field]: e.target.value })
+    }
+  />
+))}
+
 
         {/* TERMS */}
         <div className="flex items-center gap-2">

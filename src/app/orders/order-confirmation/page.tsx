@@ -4,18 +4,48 @@ import { useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import {
   CheckCircle,
-  User,
-  Mail,
-  Phone,
-  Calendar,
   CreditCard,
   Package,
 } from "lucide-react";
+import Link from "next/link";
+
+
+interface Product {
+  id: number;
+  wigName: string;
+  Colour?: string;
+  lengths?: number[];
+  imageUrl?: string;
+}
+
+interface Order {
+  id: number;
+  totalAmount: number;
+  depositAmount: number;
+  status: string;
+  first_name: string;
+  last_name: string;
+  email: string;
+  phoneNumber: string;
+  district?: string;
+  product?: Product;
+}
+
+interface Payment {
+  order: Order;
+}
+
+interface OrderData {
+  paychangu_status: "success" | "failed";
+  payment?: Payment;
+}
+
 
 export default function OrderConfirmationPage() {
   const searchParams = useSearchParams();
   const txRef = searchParams.get("tx_ref");
-  const [orderData, setOrderData] = useState<any>(null);
+  const [orderData, setOrderData] = useState<OrderData | null>(null);
+
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -65,6 +95,15 @@ export default function OrderConfirmationPage() {
 
   const order = orderData.payment?.order;
 
+  if (!order) {
+  return (
+    <div className="flex justify-center items-center h-screen text-gray-600 text-lg">
+      Invalid order data.
+    </div>
+  );
+}
+
+
   return (
     <section className="min-h-screen bg-white py-10 px-4 flex justify-center">
       <div className="bg-white shadow-2xl rounded-2xl max-w-5xl w-full p-6 md:p-10">
@@ -104,14 +143,14 @@ export default function OrderConfirmationPage() {
               </span>
             </div>
 
-            <button
-              className="mt-6  bg-[#856e91] hover:bg-[#594a61] text-white py-3 rounded-xl font-semibold transition"
-              onClick={() => (window.location.href = "/")}
-            >
-              Back to Home
-            </button>
+<Link
+  href="/"
+  className="mt-6 inline-block bg-pink-600 text-white py-2 px-6 rounded-lg font-medium hover:bg-pink-700 transition-colors"
+>
+  Go back to Home
+</Link>
           </div>
-
+          
           {/* RIGHT SIDE — ORDER SUMMARY */}
           <div className="bg-gray-50 rounded-xl p-6 shadow-inner">
             <h2 className="text-xl font-semibold text-[#856e91] mb-4">

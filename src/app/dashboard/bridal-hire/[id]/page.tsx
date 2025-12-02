@@ -1,6 +1,6 @@
 "use client";
 
-import { use, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { Mail, Phone, ArrowLeft } from "lucide-react";
 import { useRouter } from "next/navigation";
 
@@ -25,9 +25,13 @@ type Booking = {
   phoneNumber: string;
 };
 
-export default function AdminWigDetails({ params }: { params: Promise<{ id: string }> }) {
+interface Props {
+  params: { id: string };
+}
+
+export default function AdminWigDetails({ params }: Props) {
   const router = useRouter();
-  const { id } = use(params);
+  const { id } = params;
 
   const [wig, setWig] = useState<BridalWig | null>(null);
   const [bookings, setBookings] = useState<Booking[]>([]);
@@ -44,13 +48,13 @@ export default function AdminWigDetails({ params }: { params: Promise<{ id: stri
         // Fetch wig details
         const wigRes = await fetch(`https://curls-api.onrender.com/bridal-hire/${id}`);
         if (!wigRes.ok) throw new Error("Wig not found");
-        const wigData = await wigRes.json();
+        const wigData: BridalWig = await wigRes.json();
         setWig(wigData);
 
-        // Fetch bookings and sort by date (newest first)
+        // Fetch bookings and sort by date
         const bookingRes = await fetch(`https://curls-api.onrender.com/bookings/by-wig/${id}`);
         if (bookingRes.ok) {
-          const bookingData = await bookingRes.json();
+          const bookingData: Booking[] = await bookingRes.json();
           const sortedBookings = Array.isArray(bookingData)
             ? bookingData.sort(
                 (a, b) =>
@@ -59,8 +63,8 @@ export default function AdminWigDetails({ params }: { params: Promise<{ id: stri
             : [];
           setBookings(sortedBookings);
         }
-      } catch (err) {
-        setError((err as Error).message);
+      } catch (err: unknown) {
+        setError(err instanceof Error ? err.message : "Unknown error");
       } finally {
         setLoading(false);
       }
@@ -95,7 +99,7 @@ export default function AdminWigDetails({ params }: { params: Promise<{ id: stri
         <ArrowLeft className="w-5 h-5" /> Back
       </button>
 
-      {/* Main Content: 2 columns */}
+      {/* Main Content */}
       <div className="flex flex-col md:flex-row gap-6">
         {/* Left Column: Wig Image + Details */}
         <div className="flex flex-col text-black items-center md:w-1/3 bg-white shadow rounded-2xl p-4">

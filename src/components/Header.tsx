@@ -19,23 +19,25 @@ const Header: React.FC = () => {
 
       {/* Main Navbar */}
     <div className="max-w-7xl mx-auto flex items-center justify-between py-4 px-4 sm:px-6 md:px-8">
-    <a href="/" className="flex items-center">
-    <Image
+<Link href="/" className="flex items-center">
+  <Image
     src="/logo.png"
     alt="Curls Logo"
     width={120}
     height={48}
     className="object-contain"
-    />
-    </a>
+  />
+</Link>
+
 
         {/* Desktop Nav Links */}
         <nav className="hidden md:flex gap-10 text-base text-black font-normal">
-          <a href="/" className="hover:text-gray-500 transition">Home</a>
-          <a href="/rent" className="hover:text-gray-500 transition">Rent</a>
-          <a href="/orders" className="hover:text-gray-500 transition">Shop</a>
-          <a href="/contactus" className="hover:text-gray-500 transition">Contact us</a>
-        </nav>
+  <Link href="/" className="hover:text-gray-500 transition">Home</Link>
+  <Link href="/rent" className="hover:text-gray-500 transition">Rent</Link>
+  <Link href="/orders" className="hover:text-gray-500 transition">Shop</Link>
+  <Link href="/contactus" className="hover:text-gray-500 transition">Contact us</Link>
+</nav>
+
 
         {/* Icons */}
         {/* Icons */}
@@ -63,12 +65,12 @@ const Header: React.FC = () => {
 
       {/* Mobile Nav Links */}
       {menuOpen && (
-        <nav className="md:hidden bg-white border-t border-gray-100 px-4 py-4 flex flex-col gap-4 text-black font-medium">
-          <a href="/" className="hover:text-gray-500 transition">Home</a>
-          <a href="/rent" className="hover:text-gray-500 transition">Rent</a>
-          <a href="/orders" className="hover:text-gray-500 transition">Shop</a>
-          <a href="/contactus" className="hover:text-gray-500 transition">Contact us</a>
-        </nav>
+       <nav className="md:hidden bg-white border-t border-gray-100 px-4 py-4 flex flex-col gap-4 text-black font-medium">
+    <Link href="/" className="hover:text-gray-500 transition">Home</Link>
+    <Link href="/rent" className="hover:text-gray-500 transition">Rent</Link>
+    <Link href="/orders" className="hover:text-gray-500 transition">Shop</Link>
+    <Link href="/contactus" className="hover:text-gray-500 transition">Contact us</Link>
+  </nav>
       )}
        <div className="bg-black text-white text-sm flex justify-center items-center py-2 px-4 md:px-6">
         <p className="font-medium text-center">New Stock alert in our shop!</p>

@@ -12,8 +12,28 @@ import {
   CreditCard,
 } from "lucide-react";
 
+
+
+
+interface BridalWig {
+  wigName: string;
+  imageUrl?: string;
+}
+
+interface Booking {
+  txRef: string;
+  firstName: string;
+  lastName: string;
+  email: string;
+  phoneNumber: string;
+  bookingDate: string;
+  amount: number;
+  bridalWig?: BridalWig;
+}
+
+
 export default function BookingConfirmation() {
-  const [booking, setBooking] = useState<any>(null);
+  const [booking, setBooking] = useState<Booking | null>(null);
   const [loading, setLoading] = useState(true);
   const searchParams = useSearchParams();
   const txRef = searchParams.get("tx_ref");
@@ -21,16 +41,17 @@ export default function BookingConfirmation() {
   useEffect(() => {
     const fetchBooking = async () => {
       if (!txRef) return;
-      try {
-        const res = await axios.get(
-          `https://curls-api.onrender.com/bookings/by-txref/${txRef}`
-        );
-        setBooking(res.data);
-      } catch (err) {
-        console.error(err);
-      } finally {
-        setLoading(false);
-      }
+try {
+  const res = await axios.get<Booking>(
+    `https://curls-api.onrender.com/bookings/by-txref/${txRef}`
+  );
+  setBooking(res.data);
+} catch (err) {
+  console.error(err);
+} finally {
+  setLoading(false);
+}
+
     };
 
     fetchBooking();

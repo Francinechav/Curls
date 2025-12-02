@@ -15,8 +15,9 @@ interface Order {
   phoneNumber: string;
   product?: InternationalProduct;
   user?: { id: number; email: string };
-  payments?: any[];
+  payments?: Payment[]; 
 }
+
 
 interface InternationalProduct {
   id: number;
@@ -28,6 +29,14 @@ interface InternationalProduct {
   deliveryDays?: number;
   active?: boolean;
   imageUrl?: string;
+}
+
+
+interface Payment {
+  id: number;
+  amount: number;
+  status: "pending" | "succeeded" | "failed";
+  createdAt: string;
 }
 
 export default function AdminOrdersPage() {

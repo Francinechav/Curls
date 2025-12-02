@@ -13,6 +13,16 @@ type BridalWig = {
   product: { id: number; type: string };
 };
 
+interface FormInputProps {
+  label: string;
+  name: string;
+  value: string | number;
+  onChange: (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => void;
+  type?: string;
+  placeholder?: string;
+  required?: boolean;
+}
+
 type IntlWig = {
   id: number;
   wigName: string;
@@ -24,6 +34,9 @@ type IntlWig = {
   product: { id: number; type: string };
   active: boolean;
 };
+
+type WigItem = BridalWig | IntlWig;
+
 
 type ProductOption = { id: number; type: string };
 
@@ -41,7 +54,9 @@ function ProductCard({
   badge?: { text: string; variant: "green" | "red" };
   priceLabel?: string | JSX.Element;
   link: string;
-}) {
+})
+
+{
   return (
     <article className="flex flex-col bg-white rounded-2xl overflow-hidden shadow-[0_4px_18px_rgba(15,15,15,0.06)]">
       {/* image area: use responsive container with fixed aspect (4:3) */}
@@ -108,15 +123,7 @@ function SkeletonCard() {
   );
 }
 
-function FormInput({
-  label,
-  name,
-  value,
-  onChange,
-  type = "text",
-  placeholder = "",
-  required = false,
-}: any) {
+function FormInput({ label, name, value, onChange, type = "text", placeholder = "", required = false }: FormInputProps)  {
   return (
     <div>
       <label className="block text-sm font-medium text-gray-700 mb-2">
@@ -258,16 +265,41 @@ export default function AdminWigsPageFull() {
     let list = [...activeList];
 
     if (q) {
-      list = list.filter((item: any) =>
-        (item.wigName || "").toLowerCase().includes(q) ||
-        (item.Colour || "").toLowerCase().includes(q) ||
-        (item.lengths || []).join(", ").toLowerCase().includes(q)
-      );
-    }
+  const query = q.toLowerCase();
 
-    if (sort === "price-asc") list.sort((a: any, b: any) => (a.price || 0) - (b.price || 0));
-    if (sort === "price-desc") list.sort((a: any, b: any) => (b.price || 0) - (a.price || 0));
-    return list;
+  list = list.filter((item: WigItem) => {
+    const name = item.wigName?.toLowerCase() || "";
+   const colour =
+  "Colour" in item && item.Colour
+    ? item.Colour.toLowerCase()
+    : "";
+ // Only IntlWig has this
+    const lengths = item.lengths?.join(", ").toLowerCase() || "";
+
+    return (
+      name.includes(query) ||
+      colour.includes(query) ||
+      lengths.includes(query)
+    );
+  });
+}
+
+    if (sort === "price-asc") {
+  list.sort((a: WigItem, b: WigItem) => {
+    return a.price - b.price
+;
+  });
+}
+
+if (sort === "price-desc") {
+  list.sort((a: WigItem, b: WigItem) => {
+    return a.price - b.price
+;
+  });
+}
+
+return list;
+
   }, [activeList, query, sort]);
 
   return (
@@ -368,18 +400,20 @@ export default function AdminWigsPageFull() {
             {filtered.map((item: any) => {
               const isIntl = activeTab === "international";
               const title = item.wigName;
-              const subtitle = isIntl
-                ? `Colour: ${item.Colour} • ${item.lengths?.join(", ")} inches`
-                : `Length: ${item.lengths?.join(", ")} inches`;
+              const subtitle = activeTab === "international" && "Colour" in item
+  ? `Colour: ${item.Colour} • ${item.lengths.join(", ")} inches`
+  : `Length: ${item.lengths.join(", ")} inches`;
               const priceLabel = isIntl
                 ? `£${item.price}`
                 : `£${item.price}${item.discount ? ` • £${item.discount} Member` : ""}`;
-              const badge = isIntl
-                ? {
-                    text: item.active ? "Available" : "Sold",
-                    variant: item.active ? ("green" as const) : ("red" as const),
-                  }
-                : undefined;
+             const badge =
+  activeTab === "international" && "active" in item
+    ? {
+        text: item.active ? "Available" : "Sold",
+        variant: item.active ? ("green" as const) : ("red" as const),
+      }
+    : undefined;
+
 
               const imageSrc = item.imageUrl
                 ? `https://curls-api.onrender.com${item.imageUrl}`
