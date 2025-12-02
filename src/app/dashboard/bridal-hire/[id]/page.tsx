@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { Mail, Phone, ArrowLeft } from "lucide-react";
 import { useRouter } from "next/navigation";
+import Image from "next/image"; 
 
 type BridalWig = {
   id: number;
@@ -103,7 +104,7 @@ export default function AdminWigDetails({ params }: Props) {
       <div className="flex flex-col md:flex-row gap-6">
         {/* Left Column: Wig Image + Details */}
         <div className="flex flex-col text-black items-center md:w-1/3 bg-white shadow rounded-2xl p-4">
-          <img
+          <Image
             src={wig.imageUrl ? `https://curls-api.onrender.com${wig.imageUrl}` : "/placeholder.jpg"}
             alt={wig.wigName}
             className="w-120 h-80 object-cover rounded-xl mb-4 cursor-pointer hover:scale-105 transition duration-300"
@@ -187,7 +188,7 @@ export default function AdminWigDetails({ params }: Props) {
             >
               ✕
             </button>
-            <img
+            <Image
               src={wig.imageUrl ? `https://curls-api.onrender.com${wig.imageUrl}` : "/placeholder.jpg"}
               alt={wig.wigName}
               className="rounded-xl w-full h-64 mb-4 object-cover"

@@ -2,6 +2,7 @@
 
 import React, { useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation";
+import Image from "next/image"; 
 import axios from "axios";
 import {
   CheckCircle,
@@ -104,7 +105,7 @@ try {
             {/* Wig Image */}
             {booking.bridalWig?.imageUrl && (
               <div className="rounded-xl overflow-hidden border shadow-sm">
-                <img
+                <Image
                   src={`https://curls-api.onrender.com${booking.bridalWig.imageUrl}`}
                   alt={booking.bridalWig.wigName}
                   className="w-full h-72 object-cover"

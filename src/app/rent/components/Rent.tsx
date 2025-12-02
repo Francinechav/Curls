@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image"; 
 import { useEffect, useState } from "react";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
@@ -199,7 +200,7 @@ export default function Rent() {
   >
     {/* Wig image */}
     <div className="w-full aspect-[3/4] rounded-3xl overflow-hidden bg-gray-100">
-      <img
+      <Image
         src={wig.imageUrl ? `https://curls-api.onrender.com${wig.imageUrl}` : "/placeholder.png"}
         alt={wig.wigName}
         className="w-full h-full object-cover"
@@ -290,7 +291,7 @@ export default function Rent() {
 
           {/* RESPONSIVE IMAGE CONTAINER */}
           <div className="w-full aspect-[4/5] rounded-2xl overflow-hidden shadow-sm">
-  <img
+  <Image
     src={selectedWig.imageUrl ? `https://curls-api.onrender.com${selectedWig.imageUrl}` : "/placeholder.png"}
     alt={selectedWig.wigName}
     className="w-full h-full object-cover"

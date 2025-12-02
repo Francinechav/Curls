@@ -1,5 +1,6 @@
 import Link from "next/link";
 
+import Image from "next/image"; 
 export default function Ourservices() {
   return (
     <section className="w-full px-6 md:px-12 lg:px-20 py-20 bg-[#e6ddeb]">
@@ -32,7 +33,7 @@ export default function Ourservices() {
   lg:h-[420px]              /* Desktop */
   flex items-center justify-center overflow-hidden
 ">
-  <img
+  <Image
     src="/wigb.jpeg"
     alt="Bridal wig rentals"
     className="w-full h-full object-cover rounded-3xl"
@@ -51,7 +52,7 @@ export default function Ourservices() {
   lg:h-[500px]              /* Desktop */
   flex items-center justify-center overflow-hidden
 ">
-  <img
+  <Image
     src="/wig8.jpeg"
     alt="Luxury wig sales"
     className="w-full h-full object-cover rounded-3xl"

@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import Image from "next/image";
 import { useSearchParams } from "next/navigation";
 import {
   CheckCircle,
@@ -83,12 +84,13 @@ export default function OrderConfirmationPage() {
         <p className="text-gray-700 max-w-md">
           We couldn’t verify your payment. Please try again or contact support.
         </p>
-        <a
-          href="/"
-          className="mt-6 inline-block bg-pink-600 text-white py-2 px-6 rounded-lg font-medium hover:bg-pink-700 transition-colors"
-        >
-          Go back to Home
-        </a>
+       <Link
+  href="/"
+  className="mt-6 inline-block bg-pink-600 text-white py-2 px-6 rounded-lg font-medium hover:bg-pink-700 transition-colors"
+>
+  Go back to Home
+</Link>
+
       </div>
     );
   }
@@ -129,11 +131,14 @@ export default function OrderConfirmationPage() {
 
             {order?.product?.imageUrl && (
               <div className="rounded-xl overflow-hidden border shadow-sm">
-                <img
-                  src={`https://curls-api.onrender.com${order.product.imageUrl}`}
-                  alt={order.product.wigName}
-                  className="w-full h-72 object-cover"
-                />
+                <Image
+  src={`https://curls-api.onrender.com${order.product.imageUrl}`}
+  alt={order.product.wigName}
+  width={800}
+  height={600}
+  className="w-full h-72 object-cover"
+  unoptimized
+/>
               </div>
             )}
 

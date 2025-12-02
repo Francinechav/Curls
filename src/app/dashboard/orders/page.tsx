@@ -1,5 +1,7 @@
+
 "use client";
 
+import Image from "next/image"; 
 import React, { useEffect, useState } from "react";
 import { Search } from "lucide-react";
 
@@ -289,7 +291,7 @@ export default function AdminOrdersPage() {
             </h2>
 
             {selectedWig.imageUrl && (
-              <img
+              <Image
                 src={`https://curls-api.onrender.com${selectedWig.imageUrl}`}
                 alt={selectedWig.wigName}
                 className="mb-2 rounded-lg w-full object-cover max-h-60 mx-auto"

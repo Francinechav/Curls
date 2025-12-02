@@ -1,9 +1,9 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useSearchParams } from "next/navigation";
+import { useSearchParams, useRouter } from "next/navigation";
+import Link from "next/link";
 import { CheckCircle, Calendar, CreditCard, Package, Info } from "lucide-react";
-
 
 interface SpecialOrder {
   id: number;
@@ -27,10 +27,8 @@ interface SpecialOrderData {
   order?: SpecialOrder;
 }
 
-
-
-
 export default function SpecialOrderConfirmation() {
+  const router = useRouter();
   const searchParams = useSearchParams();
   const txRef = searchParams.get("tx_ref");
 
@@ -42,7 +40,9 @@ export default function SpecialOrderConfirmation() {
       if (!txRef) return;
 
       try {
-        const res = await fetch(`https://curls-api.onrender.com/payments/verify/${txRef}`);
+        const res = await fetch(
+          `https://curls-api.onrender.com/payments/verify/${txRef}`
+        );
         const data = await res.json();
         console.log("🔍 SPECIAL ORDER RESPONSE:", data);
         setOrderData(data);
@@ -64,6 +64,7 @@ export default function SpecialOrderConfirmation() {
     );
   }
 
+  // Payment failed
   if (!orderData || orderData.paychangu_status !== "success") {
     return (
       <div className="flex justify-center items-center h-screen flex-col text-center px-4">
@@ -71,12 +72,14 @@ export default function SpecialOrderConfirmation() {
         <p className="text-gray-700 max-w-md">
           We couldn’t verify your payment for your special order.
         </p>
-        <a
+
+        {/* ❌ FIXED: replaced <a> with <Link> */}
+        <Link
           href="/"
           className="mt-6 inline-block bg-pink-600 text-white py-2 px-6 rounded-lg font-medium hover:bg-pink-700 transition-colors"
         >
           Back to Home
-        </a>
+        </Link>
       </div>
     );
   }
@@ -84,13 +87,12 @@ export default function SpecialOrderConfirmation() {
   const order = orderData.order;
 
   if (!order) {
-  return (
-    <div className="flex justify-center items-center h-screen text-gray-600 text-lg">
-      Invalid order data.
-    </div>
-  );
-}
-
+    return (
+      <div className="flex justify-center items-center h-screen text-gray-600 text-lg">
+        Invalid order data.
+      </div>
+    );
+  }
 
   return (
     <section className="min-h-screen bg-white py-10 px-4 flex justify-center">
@@ -107,7 +109,6 @@ export default function SpecialOrderConfirmation() {
           </div>
         </div>
 
-        {/* Order Summary - Full Width */}
         <div className="bg-gray-50 rounded-xl p-6 shadow-inner">
           <h2 className="text-xl font-semibold text-[#856e91] mb-4">
             Special Order Summary
@@ -172,9 +173,10 @@ export default function SpecialOrderConfirmation() {
               A confirmation email has been sent to <strong>{order.email}</strong>.
             </p>
 
+            {/* ❌ FIXED: removed window.location.href */}
             <button
               className="mt-6 bg-[#856e91] hover:bg-[#594a61] text-white py-3 rounded-xl font-semibold transition w-full"
-              onClick={() => (window.location.href = "/")}
+              onClick={() => router.push("/")}
             >
               Back to Home
             </button>

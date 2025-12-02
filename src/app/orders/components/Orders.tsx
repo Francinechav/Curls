@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import SpecialOrderPricingTables from "../components/special-order-pricing";
-
+import Image from "next/image"; 
 
 interface InternationalProduct {
   id: number;
@@ -332,7 +332,7 @@ const handleSpecialOrderPay = async () => {
                   setModalOpen(true);
                 }}
               >
-                <img
+                <Image
                   src={product.imageUrl ? `https://curls-api.onrender.com${product.imageUrl}` : "/placeholder.png"}
                   alt={product.wigName}
                   className="w-full h-full object-cover"
@@ -384,7 +384,7 @@ const handleSpecialOrderPay = async () => {
             </h2>
 
             <div className="w-full rounded-2xl overflow-hidden bg-white shadow-sm">
-              <img
+              <Image
                 src={
                   selectedProduct.imageUrl
                     ? `https://curls-api.onrender.com${selectedProduct.imageUrl}`
