@@ -1,6 +1,7 @@
 "use client";
 
 import React, { JSX, useEffect, useMemo, useState } from "react";
+import Image from "next/image";
 
 type BridalWig = {
   id: number;
@@ -12,16 +13,6 @@ type BridalWig = {
   description?: string;
   product: { id: number; type: string };
 };
-
-interface FormInputProps {
-  label: string;
-  name: string;
-  value: string | number;
-  onChange: (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => void;
-  type?: string;
-  placeholder?: string;
-  required?: boolean;
-}
 
 type IntlWig = {
   id: number;
@@ -37,8 +28,17 @@ type IntlWig = {
 
 type WigItem = BridalWig | IntlWig;
 
-
 type ProductOption = { id: number; type: string };
+
+interface FormInputProps {
+  label: string;
+  name: string;
+  value: string | number;
+  onChange: (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => void;
+  type?: string;
+  placeholder?: string;
+  required?: boolean;
+}
 
 function ProductCard({
   image,
@@ -54,27 +54,23 @@ function ProductCard({
   badge?: { text: string; variant: "green" | "red" };
   priceLabel?: string | JSX.Element;
   link: string;
-})
-
-{
+}) {
   return (
     <article className="flex flex-col bg-white rounded-2xl overflow-hidden shadow-[0_4px_18px_rgba(15,15,15,0.06)]">
-      {/* image area: use responsive container with fixed aspect (4:3) */}
       <div className="w-full relative bg-gray-100 flex items-center justify-center overflow-hidden">
-        <div className="w-full" style={{ paddingTop: "75%" }}>
-          <img
+        <div className="w-full relative" style={{ paddingTop: "75%" }}>
+          <Image
             src={image}
             alt={title}
-            className="absolute inset-0 w-full h-full object-cover transition-transform duration-300 hover:scale-105"
+            fill
+            style={{ objectFit: "cover" }}
+            className="transition-transform duration-300 hover:scale-105"
           />
         </div>
       </div>
 
       <div className="p-4 md:p-5">
-        <h3 className="text-base md:text-lg font-semibold text-gray-800 leading-snug">
-          {title}
-        </h3>
-
+        <h3 className="text-base md:text-lg font-semibold text-gray-800 leading-snug">{title}</h3>
         {subtitle && (
           <p className="text-sm text-gray-500 mt-1 truncate" title={subtitle}>
             {subtitle}
@@ -83,7 +79,6 @@ function ProductCard({
 
         <div className="mt-3 flex items-center justify-between">
           <div className="text-sm text-gray-700 font-medium">{priceLabel}</div>
-
           <div className="flex items-center gap-3">
             {badge && (
               <span
@@ -123,12 +118,10 @@ function SkeletonCard() {
   );
 }
 
-function FormInput({ label, name, value, onChange, type = "text", placeholder = "", required = false }: FormInputProps)  {
+function FormInput({ label, name, value, onChange, type = "text", placeholder = "", required = false }: FormInputProps) {
   return (
     <div>
-      <label className="block text-sm font-medium text-gray-700 mb-2">
-        {label}
-      </label>
+      <label className="block text-sm font-medium text-gray-700 mb-2">{label}</label>
       <input
         name={name}
         value={value}
@@ -156,7 +149,6 @@ export default function AdminWigsPageFull() {
   const [products, setProducts] = useState<ProductOption[]>([]);
   const [productType, setProductType] = useState<"bridal_hire" | "international" | "">("");
 
-  // Fixed formData: added Texture field
   const [formData, setFormData] = useState({
     Texture: "",
     wigName: "",
@@ -171,7 +163,6 @@ export default function AdminWigsPageFull() {
   useEffect(() => {
     fetchData();
     fetchProducts();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   async function fetchData() {
@@ -229,16 +220,17 @@ export default function AdminWigsPageFull() {
       return alert("Required fields missing.");
 
     const submissionData = new FormData();
-    submissionData.append("wigName", formData.Texture); // Texture maps to wigName
+    submissionData.append("wigName", formData.Texture);
     submissionData.append("lengths", formData.lengths);
     submissionData.append("price", formData.price);
     submissionData.append("description", formData.description);
     submissionData.append("productId", formData.productId);
-    if (productType === "bridal_hire") {
-      if (formData.discount) submissionData.append("discount", formData.discount);
-    } else {
+
+    if (productType === "bridal_hire" && formData.discount)
+      submissionData.append("discount", formData.discount);
+    if (productType === "international")
       submissionData.append("Colour", formData.Colour);
-    }
+
     if (image) submissionData.append("image", image);
 
     const endpoint =
@@ -265,41 +257,23 @@ export default function AdminWigsPageFull() {
     let list = [...activeList];
 
     if (q) {
-  const query = q.toLowerCase();
+      list = list.filter((item: WigItem) => {
+        const name = item.wigName?.toLowerCase() || "";
+        const colour = "Colour" in item && item.Colour ? item.Colour.toLowerCase() : "";
+        const lengths = item.lengths?.join(", ").toLowerCase() || "";
 
-  list = list.filter((item: WigItem) => {
-    const name = item.wigName?.toLowerCase() || "";
-   const colour =
-  "Colour" in item && item.Colour
-    ? item.Colour.toLowerCase()
-    : "";
- // Only IntlWig has this
-    const lengths = item.lengths?.join(", ").toLowerCase() || "";
-
-    return (
-      name.includes(query) ||
-      colour.includes(query) ||
-      lengths.includes(query)
-    );
-  });
-}
+        return name.includes(q) || colour.includes(q) || lengths.includes(q);
+      });
+    }
 
     if (sort === "price-asc") {
-  list.sort((a: WigItem, b: WigItem) => {
-    return a.price - b.price
-;
-  });
-}
+      list.sort((a, b) => a.price - b.price);
+    }
+    if (sort === "price-desc") {
+      list.sort((a, b) => b.price - a.price);
+    }
 
-if (sort === "price-desc") {
-  list.sort((a: WigItem, b: WigItem) => {
-    return a.price - b.price
-;
-  });
-}
-
-return list;
-
+    return list;
   }, [activeList, query, sort]);
 
   return (
@@ -354,7 +328,7 @@ return list;
             <label className="text-sm text-gray-500">Sort</label>
             <select
               value={sort}
-              onChange={(e) => setSort(e.target.value as any)}
+              onChange={(e) => setSort(e.target.value as "new" | "price-asc" | "price-desc")}
               className="border border-gray-200 rounded-xl px-3 py-2 text-sm"
             >
               <option value="new">Newest</option>
@@ -397,259 +371,235 @@ return list;
           </div>
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 sm:gap-8">
-            {filtered.map((item: any) => {
-              const isIntl = activeTab === "international";
-              const title = item.wigName;
-              const subtitle = activeTab === "international" && "Colour" in item
-  ? `Colour: ${item.Colour} • ${item.lengths.join(", ")} inches`
-  : `Length: ${item.lengths.join(", ")} inches`;
-              const priceLabel = isIntl
-                ? `£${item.price}`
-                : `£${item.price}${item.discount ? ` • £${item.discount} Member` : ""}`;
-             const badge =
-  activeTab === "international" && "active" in item
-    ? {
-        text: item.active ? "Available" : "Sold",
-        variant: item.active ? ("green" as const) : ("red" as const),
-      }
-    : undefined;
+{filtered.map((item: WigItem) => {
+  const isIntl = activeTab === "international";
+  const title = item.wigName;
+  const subtitle =
+    isIntl && "Colour" in item
+      ? `Colour: ${item.Colour} • ${item.lengths.join(", ")} inches`
+      : `Length: ${item.lengths.join(", ")} inches`;
 
+  let priceLabel: string;
+  if ("discount" in item && item.discount) {
+    priceLabel = `£${item.price} • £${item.discount} Member`;
+  } else {
+    priceLabel = `£${item.price}`;
+  }
 
-              const imageSrc = item.imageUrl
-                ? `https://curls-api.onrender.com${item.imageUrl}`
-                : "/placeholder.jpg";
-              const link = isIntl
-                ? `/dashboard/international/${item.id}`
-                : `/dashboard/bridal-hire/${item.id}`;
+  let badge:
+    | { text: string; variant: "green" | "red" }
+    | undefined = undefined;
 
-              return (
-                <ProductCard
-                  key={item.id}
-                  image={imageSrc}
-                  title={title}
-                  subtitle={subtitle}
-                  badge={badge}
-                  priceLabel={priceLabel}
-                  link={link}
-                />
-              );
-            })}
+  if ("active" in item) {
+    badge = {
+      text: item.active ? "Available" : "Sold",
+      variant: item.active ? "green" : "red",
+    };
+  }
+
+  const imageSrc = item.imageUrl
+    ? `https://curls-api.onrender.com${item.imageUrl}`
+    : "/placeholder.jpg";
+
+  const link = isIntl
+    ? `/dashboard/international/${item.id}`
+    : `/dashboard/bridal-hire/${item.id}`;
+
+  return (
+    <ProductCard
+      key={item.id}
+      image={imageSrc}
+      title={title}
+      subtitle={subtitle}
+      badge={badge}
+      priceLabel={priceLabel}
+      link={link}
+    />
+  );
+})}
+
           </div>
         )}
       </main>
 
-      {/* Modal (responsive + scroll-safe) */}
-     {showModal && (
-  <div className="fixed inset-0 z-50 flex justify-center items-start md:items-center bg-black/40 overflow-y-auto p-4 sm:p-6">
-    <div className="bg-white w-full max-w-xl sm:max-w-2xl md:max-w-4xl rounded-3xl shadow-2xl overflow-hidden">
-      
-      {/* Header */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between p-4 sm:p-6 border-b border-gray-100">
-        <div>
-          <h2 className="text-lg sm:text-xl md:text-2xl font-semibold text-gray-900">Add new wig</h2>
-          <p className="text-xs sm:text-sm text-gray-500 mt-1">
-            Create a listing for bridal or international products.
-          </p>
-        </div>
-
-        <button
-          onClick={() => {
-            setShowModal(false);
-            resetForm();
-          }}
-          className="text-gray-500 hover:text-gray-800 text-3xl md:text-2xl mt-2 md:mt-0"
-          aria-label="Close modal"
-        >
-          ✕
-        </button>
-      </div>
-
-      {/* Content */}
-      <div className="max-h-[80vh] overflow-y-auto">
-        <form
-          onSubmit={handleSubmit}
-          className="grid grid-cols-1 md:grid-cols-3 gap-4 sm:gap-6 p-4 sm:p-6"
-        >
-          {/* LEFT SECTION */}
-          <div className="md:col-span-2 space-y-4 sm:space-y-5">
-
-            {/* Product Type */}
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Product Type
-              </label>
-
-              <div className="flex flex-wrap gap-2">
-                <button
-                  type="button"
-                  onClick={() => setProductType("bridal_hire")}
-                  className={`px-4 py-2 rounded-xl border text-sm font-medium ${
-                    productType === "bridal_hire"
-                      ? "bg-[#856e91] border-[#856e91] text-white"
-                      : "border-gray-200 text-gray-700"
-                  }`}
-                >
-                  Bridal hire
-                </button>
-
-                <button
-                  type="button"
-                  onClick={() => setProductType("international")}
-                  className={`px-4 py-2 rounded-xl border text-sm font-medium ${
-                    productType === "international"
-                      ? "bg-[#856e91] border-[#856e91] text-white"
-                      : "border-gray-200 text-gray-700"
-                  }`}
-                >
-                  International
-                </button>
+      {/* Modal */}
+      {showModal && (
+        <div className="fixed inset-0 z-50 flex justify-center items-start md:items-center bg-black/40 overflow-y-auto p-4 sm:p-6">
+          <div className="bg-white w-full max-w-xl sm:max-w-2xl md:max-w-4xl rounded-3xl shadow-2xl overflow-hidden">
+            <div className="flex flex-col md:flex-row md:items-center justify-between p-4 sm:p-6 border-b border-gray-100">
+              <div>
+                <h2 className="text-lg sm:text-xl md:text-2xl font-semibold text-gray-900">Add new wig</h2>
+                <p className="text-xs sm:text-sm text-gray-500 mt-1">
+                  Create a listing for bridal or international products.
+                </p>
               </div>
+
+              <button
+                onClick={() => {
+                  setShowModal(false);
+                  resetForm();
+                }}
+                className="text-gray-500 hover:text-gray-800 text-3xl md:text-2xl mt-2 md:mt-0"
+                aria-label="Close modal"
+              >
+                ✕
+              </button>
             </div>
 
-            {/* Form fields based on type */}
-            {productType && (
-              <>
-                {/* Product */}
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Product
-                  </label>
-                  <select
-                    name="productId"
-                    value={formData.productId}
-                    onChange={handleInputChange}
-                    required
-                    className="w-full border border-gray-200 rounded-xl px-4 py-3"
-                  >
-                    <option value="">Select product</option>
-                    {products
-                      .filter((p) => {
-                        const normalized = p.type?.toLowerCase();
-                        return productType === "bridal_hire"
-                          ? normalized?.includes("bridal")
-                          : normalized?.includes("international");
-                      })
-                      .map((p) => (
-                        <option key={p.id} value={p.id}>
-                          {p.type} – id {p.id}
-                        </option>
-                      ))}
-                  </select>
-                </div>
+            <div className="max-h-[80vh] overflow-y-auto">
+              <form
+                onSubmit={handleSubmit}
+                className="grid grid-cols-1 md:grid-cols-3 gap-4 sm:gap-6 p-4 sm:p-6"
+              >
+                {/* LEFT SECTION */}
+                <div className="md:col-span-2 space-y-4 sm:space-y-5">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">Product Type</label>
+                    <div className="flex flex-wrap gap-2">
+                      <button
+                        type="button"
+                        onClick={() => setProductType("bridal_hire")}
+                        className={`px-4 py-2 rounded-xl border text-sm font-medium ${
+                          productType === "bridal_hire"
+                            ? "bg-[#856e91] border-[#856e91] text-white"
+                            : "border-gray-200 text-gray-700"
+                        }`}
+                      >
+                        Bridal Hire
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => setProductType("international")}
+                        className={`px-4 py-2 rounded-xl border text-sm font-medium ${
+                          productType === "international"
+                            ? "bg-[#856e91] border-[#856e91] text-white"
+                            : "border-gray-200 text-gray-700"
+                        }`}
+                      >
+                        International
+                      </button>
+                    </div>
+                  </div>
 
-                {/* Inputs */}
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                  <FormInput
-                    label="Enter texture"
-                    name="Texture"
-                    value={formData.Texture}
-                    onChange={handleInputChange}
-                    required
-                  />
-
-                  {productType === "international" ? (
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <FormInput
-                      label="Colour"
-                      name="Colour"
-                      value={formData.Colour}
+                      label="Texture / Name"
+                      name="Texture"
+                      value={formData.Texture}
                       onChange={handleInputChange}
                       required
                     />
-                  ) : (
+                    {productType === "international" && (
+                      <FormInput
+                        label="Colour"
+                        name="Colour"
+                        value={formData.Colour}
+                        onChange={handleInputChange}
+                        required
+                      />
+                    )}
+                  </div>
+
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <FormInput
-                      label="Discount (%)"
+                      label="Lengths (comma separated)"
+                      name="lengths"
+                      value={formData.lengths}
+                      onChange={handleInputChange}
+                      required
+                    />
+                    <FormInput
+                      label="Price"
+                      name="price"
+                      value={formData.price}
+                      onChange={handleInputChange}
+                      required
+                      type="number"
+                    />
+                  </div>
+
+                  {productType === "bridal_hire" && (
+                    <FormInput
+                      label="Discounted Price for Members"
                       name="discount"
                       value={formData.discount}
                       onChange={handleInputChange}
                       type="number"
-                      placeholder="0"
                     />
                   )}
 
-                  <FormInput
-                    label="Lengths (comma separated)"
-                    name="lengths"
-                    value={formData.lengths}
-                    onChange={handleInputChange}
-                    placeholder="12,14,16"
-                    required
-                  />
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Product
+                    </label>
+                    <select
+                      name="productId"
+                      value={formData.productId}
+                      onChange={handleInputChange}
+                      required
+                      className="w-full border border-gray-200 rounded-xl px-4 py-2 text-sm"
+                    >
+                      <option value="">Select product</option>
+                      {products.map((p) => (
+                        <option key={p.id} value={p.id}>
+                          {p.type}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
 
-                  <FormInput
-                    label="Price (local currency)"
-                    name="price"
-                    value={formData.price}
-                    onChange={handleInputChange}
-                    type="number"
-                    required
-                  />
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Description
+                    </label>
+                    <textarea
+                      name="description"
+                      value={formData.description}
+                      onChange={handleInputChange}
+                      className="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-pink-100"
+                      rows={4}
+                    />
+                  </div>
                 </div>
 
-                {/* Description */}
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Description
-                  </label>
-                  <textarea
-                    name="description"
-                    value={formData.description}
-                    onChange={handleInputChange}
-                    rows={4}
-                    className="w-full border border-gray-200 rounded-xl px-4 py-3"
-                    placeholder="Short description for the product"
+                {/* RIGHT SECTION */}
+                <div className="flex flex-col items-center justify-start gap-4">
+                  <div className="w-full relative aspect-square border border-gray-200 rounded-2xl overflow-hidden bg-gray-50">
+                    {image ? (
+                      <Image
+                        key={image.name}
+                        src={URL.createObjectURL(image)}
+                        alt="Preview"
+                        fill
+                        style={{ objectFit: "cover" }}
+                        unoptimized
+                      />
+                    ) : (
+                      <div className="flex items-center justify-center h-full text-gray-400 text-sm">
+                        No image selected
+                      </div>
+                    )}
+                  </div>
+
+                  <input
+                    type="file"
+                    accept="image/*"
+                    onChange={(e) => setImage(e.target.files?.[0] ?? null)}
+                    className="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-sm file:font-semibold file:bg-[#856e91] file:text-white hover:file:bg-[#594a61]"
                   />
+
+                  <button
+                    type="submit"
+                    className="w-full bg-[#856e91] hover:bg-[#594a61] text-white py-3 rounded-xl font-semibold text-sm mt-2"
+                  >
+                    Add Wig
+                  </button>
                 </div>
-              </>
-            )}
-          </div>
-
-          {/* RIGHT SECTION */}
-          <div className="flex flex-col gap-4">
-
-            {/* Upload */}
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Upload image
-              </label>
-              <input
-                type="file"
-                accept="image/*"
-                onChange={(e) => setImage(e.target.files?.[0] ?? null)}
-                className="w-full text-sm"
-              />
+              </form>
             </div>
-
-            {/* Preview */}
-            <div className="w-full h-44 sm:h-56 md:h-48 bg-gray-50 rounded-xl border border-gray-100 overflow-hidden flex items-center justify-center">
-              {image ? (
-                <img
-                  src={URL.createObjectURL(image)}
-                  alt="preview"
-                  className="w-full h-full object-cover"
-                />
-              ) : (
-                <div className="text-center text-xs text-gray-400 px-2">
-                  <div>Image preview</div>
-                  <div className="text-[11px] mt-1">Recommended ratio: 4:3 or 3:2</div>
-                </div>
-              )}
-            </div>
-
-            {/* Submit */}
-            <button
-              type="submit"
-              disabled={!productType || !formData.productId}
-              className="w-full py-3 rounded-xl bg-[#856e91] hover:bg-[#594a61] text-white font-semibold disabled:opacity-50 transition"
-            >
-              Add wig
-            </button>
           </div>
-        </form>
-      </div>
-    </div>
-  </div>
-)}
-
+        </div>
+      )}
     </div>
   );
 }
