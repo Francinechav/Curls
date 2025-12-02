@@ -16,7 +16,7 @@ export default function SpecialOrderConfirmation() {
       if (!txRef) return;
 
       try {
-        const res = await fetch(`http://localhost:8080/payments/verify/${txRef}`);
+        const res = await fetch(`https://curls-api.onrender.com/payments/verify/${txRef}`);
         const data = await res.json();
         console.log("🔍 SPECIAL ORDER RESPONSE:", data);
         setOrderData(data);

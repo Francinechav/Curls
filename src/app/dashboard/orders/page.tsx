@@ -42,14 +42,14 @@ export default function AdminOrdersPage() {
   const itemsPerPage = 15;
 
   useEffect(() => {
-    fetch("http://localhost:8080/orders/admin/all")
+    fetch("https://curls-api.onrender.com/orders/admin/all")
       .then((res) => res.json())
       .then((data) => setOrders(data))
       .catch(console.error);
   }, []);
 
   const updateStatus = async (id: number, newStatus: string) => {
-    await fetch(`http://localhost:8080/orders/${id}/status`, {
+    await fetch(`https://curls-api.onrender.com/orders/${id}/status`, {
       method: "PATCH",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ status: newStatus }),
@@ -281,7 +281,7 @@ export default function AdminOrdersPage() {
 
             {selectedWig.imageUrl && (
               <img
-                src={`http://localhost:8080${selectedWig.imageUrl}`}
+                src={`https://curls-api.onrender.com${selectedWig.imageUrl}`}
                 alt={selectedWig.wigName}
                 className="mb-2 rounded-lg w-full object-cover max-h-60 mx-auto"
               />

@@ -24,7 +24,7 @@ export default function OrderConfirmationPage() {
 
       try {
         const res = await fetch(
-          `http://localhost:8080/payments/verify/${txRef}`
+          `https://curls-api.onrender.com/payments/verify/${txRef}`
         );
         const data = await res.json();
         setOrderData(data);
@@ -91,7 +91,7 @@ export default function OrderConfirmationPage() {
             {order?.product?.imageUrl && (
               <div className="rounded-xl overflow-hidden border shadow-sm">
                 <img
-                  src={`http://localhost:8080${order.product.imageUrl}`}
+                  src={`https://curls-api.onrender.com${order.product.imageUrl}`}
                   alt={order.product.wigName}
                   className="w-full h-72 object-cover"
                 />

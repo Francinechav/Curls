@@ -128,7 +128,7 @@ const getSpecialOrderPrice = () => {
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        const res = await fetch("http://localhost:8080/international-products");
+        const res = await fetch("https://curls-api.onrender.com/international-products");
         const data = await res.json();
         setProducts(data.filter((p: InternationalProduct) => p.active));
       } catch (err) {
@@ -161,7 +161,7 @@ const getSpecialOrderPrice = () => {
 
     try {
       const depositAmount = parseFloat(selectedProduct.price)
-      const res = await fetch("http://localhost:8080/payments/initiate", {
+      const res = await fetch("https://curls-api.onrender.com/payments/initiate", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -195,7 +195,7 @@ const handleSpecialOrderPay = async () => {
     const totalAmount = getSpecialOrderPrice(); // already includes shipping
     const depositAmount = totalAmount / 2; // 50% deposit (you can Math.ceil if you want rounding)
 
-    const res = await fetch("http://localhost:8080/payments/initiate", {
+    const res = await fetch("https://curls-api.onrender.com/payments/initiate", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
@@ -327,7 +327,7 @@ const handleSpecialOrderPay = async () => {
                 }}
               >
                 <img
-                  src={product.imageUrl ? `http://localhost:8080${product.imageUrl}` : "/placeholder.png"}
+                  src={product.imageUrl ? `https://curls-api.onrender.com${product.imageUrl}` : "/placeholder.png"}
                   alt={product.wigName}
                   className="w-full h-full object-cover"
                 />
@@ -381,7 +381,7 @@ const handleSpecialOrderPay = async () => {
               <img
                 src={
                   selectedProduct.imageUrl
-                    ? `http://localhost:8080${selectedProduct.imageUrl}`
+                    ? `https://curls-api.onrender.com${selectedProduct.imageUrl}`
                     : "/placeholder.png"
                 }
                 alt={selectedProduct.wigName}

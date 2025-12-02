@@ -170,8 +170,8 @@ export default function AdminWigsPageFull() {
   async function fetchData() {
     setLoading(true);
     try {
-      const bridalRes = await fetch("http://localhost:8080/bridal-hire/admin/all");
-      const intlRes = await fetch("http://localhost:8080/international-products/admin/all");
+      const bridalRes = await fetch("https://curls-api.onrender.com/bridal-hire/admin/all");
+      const intlRes = await fetch("https://curls-api.onrender.com/international-products/admin/all");
       const bridalJson = await bridalRes.json();
       const intlJson = await intlRes.json();
       setBridalWigs(Array.isArray(bridalJson) ? bridalJson : bridalJson?.data ?? []);
@@ -185,7 +185,7 @@ export default function AdminWigsPageFull() {
 
   async function fetchProducts() {
     try {
-      const res = await fetch("http://localhost:8080/products");
+      const res = await fetch("https://curls-api.onrender.com/products");
       const data = await res.json();
       setProducts(Array.isArray(data) ? data : data.products ?? []);
     } catch (err) {
@@ -236,8 +236,8 @@ export default function AdminWigsPageFull() {
 
     const endpoint =
       productType === "bridal_hire"
-        ? "http://localhost:8080/bridal-hire/add"
-        : "http://localhost:8080/international-products/upload";
+        ? "https://curls-api.onrender.com/bridal-hire/add"
+        : "https://curls-api.onrender.com/international-products/upload";
 
     try {
       const res = await fetch(endpoint, { method: "POST", body: submissionData });
@@ -382,7 +382,7 @@ export default function AdminWigsPageFull() {
                 : undefined;
 
               const imageSrc = item.imageUrl
-                ? `http://localhost:8080${item.imageUrl}`
+                ? `https://curls-api.onrender.com${item.imageUrl}`
                 : "/placeholder.jpg";
               const link = isIntl
                 ? `/dashboard/international/${item.id}`

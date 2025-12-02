@@ -23,7 +23,7 @@ export default function BookingConfirmation() {
       if (!txRef) return;
       try {
         const res = await axios.get(
-          `http://localhost:8080/bookings/by-txref/${txRef}`
+          `https://curls-api.onrender.com/bookings/by-txref/${txRef}`
         );
         setBooking(res.data);
       } catch (err) {
@@ -84,7 +84,7 @@ export default function BookingConfirmation() {
             {booking.bridalWig?.imageUrl && (
               <div className="rounded-xl overflow-hidden border shadow-sm">
                 <img
-                  src={`http://localhost:8080${booking.bridalWig.imageUrl}`}
+                  src={`https://curls-api.onrender.com${booking.bridalWig.imageUrl}`}
                   alt={booking.bridalWig.wigName}
                   className="w-full h-72 object-cover"
                 />

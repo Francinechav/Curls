@@ -26,7 +26,7 @@ export default function AdminHome() {
 
   useEffect(() => {
     const loadDashboard = async () => {
-      const res = await fetch("http://localhost:8080/payments/admin/summary");
+      const res = await fetch("https://curls-api.onrender.com/payments/admin/summary");
       const data = await res.json();
 
       setTotalRevenue(data.totalRevenue);

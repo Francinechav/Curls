@@ -20,12 +20,9 @@ export default function PaymentCallbackPage() {
     }
 
     const verifyPayment = async () => {
-      try {
-        const BACKEND_URL =
-          process.env.BACKEND_URL || "http://localhost:8080";
-
-        const res = await fetch(`${BACKEND_URL}/payments/verify/${txRef}`);
-        const data = await res.json();
+        try {
+      const res = await fetch("https://curls-api.onrender.com/orders/admin/all");
+      const data = await res.json();
 
         if (data.paychangu_status === "success") {
   setStatus("Payment successful! Redirecting to confirmation...");

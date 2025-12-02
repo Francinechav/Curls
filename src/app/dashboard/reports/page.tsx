@@ -27,7 +27,7 @@ export default function AdminReportsPage() {
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-  fetch("http://localhost:8080/reports")  // Removed '/admin' prefix
+  fetch("https://curls-api.onrender.com/reports")  // Removed '/admin' prefix
     .then((res) => {
       if (!res.ok) {
         throw new Error(`HTTP ${res.status}: ${res.statusText}`);

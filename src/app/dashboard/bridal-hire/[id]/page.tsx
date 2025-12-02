@@ -42,13 +42,13 @@ export default function AdminWigDetails({ params }: { params: Promise<{ id: stri
         setError(null);
 
         // Fetch wig details
-        const wigRes = await fetch(`http://localhost:8080/bridal-hire/${id}`);
+        const wigRes = await fetch(`https://curls-api.onrender.com/bridal-hire/${id}`);
         if (!wigRes.ok) throw new Error("Wig not found");
         const wigData = await wigRes.json();
         setWig(wigData);
 
         // Fetch bookings and sort by date (newest first)
-        const bookingRes = await fetch(`http://localhost:8080/bookings/by-wig/${id}`);
+        const bookingRes = await fetch(`https://curls-api.onrender.com/bookings/by-wig/${id}`);
         if (bookingRes.ok) {
           const bookingData = await bookingRes.json();
           const sortedBookings = Array.isArray(bookingData)
@@ -100,7 +100,7 @@ export default function AdminWigDetails({ params }: { params: Promise<{ id: stri
         {/* Left Column: Wig Image + Details */}
         <div className="flex flex-col text-black items-center md:w-1/3 bg-white shadow rounded-2xl p-4">
           <img
-            src={wig.imageUrl ? `http://localhost:8080${wig.imageUrl}` : "/placeholder.jpg"}
+            src={wig.imageUrl ? `https://curls-api.onrender.com${wig.imageUrl}` : "/placeholder.jpg"}
             alt={wig.wigName}
             className="w-120 h-80 object-cover rounded-xl mb-4 cursor-pointer hover:scale-105 transition duration-300"
             onClick={() => setShowWigModal(true)}
@@ -184,7 +184,7 @@ export default function AdminWigDetails({ params }: { params: Promise<{ id: stri
               ✕
             </button>
             <img
-              src={wig.imageUrl ? `http://localhost:8080${wig.imageUrl}` : "/placeholder.jpg"}
+              src={wig.imageUrl ? `https://curls-api.onrender.com${wig.imageUrl}` : "/placeholder.jpg"}
               alt={wig.wigName}
               className="rounded-xl w-full h-64 mb-4 object-cover"
             />

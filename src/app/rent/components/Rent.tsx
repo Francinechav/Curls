@@ -39,7 +39,7 @@ export default function Rent() {
   useEffect(() => {
     const fetchWigs = async () => {
       try {
-        const res = await fetch("http://localhost:8080/bridal-hire");
+        const res = await fetch("https://curls-api.onrender.com/bridal-hire");
         const data = await res.json();
         setWigs(data);
       } catch (err) {
@@ -57,7 +57,7 @@ export default function Rent() {
     const fetchDates = async () => {
       try {
         const res = await fetch(
-          `http://localhost:8080/bookings/blocked/${selectedWig.id}`
+          `https://curls-api.onrender.com/bookings/blocked/${selectedWig.id}`
         );
         const data = await res.json();
         const dates = data.map((b: any) => new Date(b.date + "T00:00:00"));
@@ -81,7 +81,7 @@ export default function Rent() {
     setSubmitting(true);
 
     try {
-      const res = await fetch("http://localhost:8080/payments/initiate", {
+      const res = await fetch("https://curls-api.onrender.com/payments/initiate", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -184,7 +184,7 @@ useEffect(() => {
     {/* Wig image */}
     <div className="w-full aspect-[3/4] rounded-3xl overflow-hidden bg-gray-100">
       <img
-        src={wig.imageUrl ? `http://localhost:8080${wig.imageUrl}` : "/placeholder.png"}
+        src={wig.imageUrl ? `https://curls-api.onrender.com${wig.imageUrl}` : "/placeholder.png"}
         alt={wig.wigName}
         className="w-full h-full object-cover"
       />
@@ -275,7 +275,7 @@ useEffect(() => {
           {/* RESPONSIVE IMAGE CONTAINER */}
           <div className="w-full aspect-[4/5] rounded-2xl overflow-hidden shadow-sm">
   <img
-    src={selectedWig.imageUrl ? `http://localhost:8080${selectedWig.imageUrl}` : "/placeholder.png"}
+    src={selectedWig.imageUrl ? `https://curls-api.onrender.com${selectedWig.imageUrl}` : "/placeholder.png"}
     alt={selectedWig.wigName}
     className="w-full h-full object-cover"
   />

@@ -40,13 +40,13 @@ export default function AdminPaymentsPage() {
     const fetchPayments = async () => {
       try {
         const resPayments = await fetch(
-          "http://localhost:8080/payments/admin/all"
+          "https://curls-api.onrender.com/payments/admin/all"
         );
         const payData = await resPayments.json();
         setPayments(payData);
 
         const resRevenue = await fetch(
-          "http://localhost:8080/payments/admin/total-revenue"
+          "https://curls-api.onrender.com/payments/admin/total-revenue"
         );
         const revData = await resRevenue.json();
         setTotalRevenue(revData.totalRevenue);

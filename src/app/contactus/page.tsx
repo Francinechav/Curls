@@ -21,7 +21,7 @@ export default function Contactus() {
     setLoading(true);
 
     try {
-      const res = await fetch(`http://localhost:8080/contact`, {
+      const res = await fetch(`https://curls-api.onrender.com/contact`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(form),

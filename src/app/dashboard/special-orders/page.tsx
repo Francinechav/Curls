@@ -54,7 +54,7 @@ export default function AdminSpecialOrdersPage() {
 
   const fetchOrders = async () => {
     try {
-      const res = await fetch("http://localhost:8080/special-orders");
+      const res = await fetch("https://curls-api.onrender.com/special-orders");
       const data = await res.json();
       setOrders(Array.isArray(data) ? data : data.orders || []);
     } catch (err) {
@@ -67,7 +67,7 @@ export default function AdminSpecialOrdersPage() {
   }, []);
 
   const updateStatus = async (id: number, newStatus: "pending" | "processing" | "completed" | "cancelled") => {
-  await fetch(`http://localhost:8080/special-orders/${id}/status`, {
+  await fetch(`https://curls-api.onrender.com/special-orders/${id}/status`, {
     method: "PUT",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ status: newStatus }),

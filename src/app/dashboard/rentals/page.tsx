@@ -53,7 +53,7 @@ export default function AdminRentalsPage() {
   const isMobile = useIsMobile();
 
   useEffect(() => {
-    fetch("http://localhost:8080/bookings/admin/all")
+    fetch("https://curls-api.onrender.com/bookings/admin/all")
       .then((res) => res.json())
       .then((data) => setBookings(data))
       .catch(console.error);
@@ -229,7 +229,7 @@ export default function AdminRentalsPage() {
           <div className="bg-white border border-gray-200 rounded-xl p-5 mt-4 shadow">
             <h2 className="text-lg font-semibold mb-3">{selectedWig.wigName}</h2>
             {selectedWig.imageUrl && (
-              <img src={`http://localhost:8080${selectedWig.imageUrl}`} alt={selectedWig.wigName} className="w-full rounded-lg mb-3 object-cover" />
+              <img src={`https://curls-api.onrender.com${selectedWig.imageUrl}`} alt={selectedWig.wigName} className="w-full rounded-lg mb-3 object-cover" />
             )}
             <div className="text-gray-700 text-sm space-y-2">
               {selectedWig.Colour && <p><strong>Colour:</strong> {selectedWig.Colour}</p>}
@@ -244,7 +244,7 @@ export default function AdminRentalsPage() {
               <button onClick={handleCloseModal} className="absolute top-3 right-3 text-gray-500 hover:text-gray-800 text-xl">✕</button>
               <h2 className="text-lg font-semibold mb-3">{selectedWig.wigName}</h2>
               {selectedWig.imageUrl && (
-                <img src={`http://localhost:8080${selectedWig.imageUrl}`} alt={selectedWig.wigName} className="w-full rounded-lg mb-3 object-cover" />
+                <img src={`https://curls-api.onrender.com${selectedWig.imageUrl}`} alt={selectedWig.wigName} className="w-full rounded-lg mb-3 object-cover" />
               )}
               <div className="text-gray-700 text-sm space-y-2">
                 {selectedWig.Colour && <p><strong>Colour:</strong> {selectedWig.Colour}</p>}
