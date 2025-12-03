@@ -332,11 +332,12 @@ const handleSpecialOrderPay = async () => {
                   setModalOpen(true);
                 }}
               >
-                <Image
-                  src={product.imageUrl ? `https://curls-api.onrender.com${product.imageUrl}` : "/placeholder.png"}
-                  alt={product.wigName}
-                  className="w-full h-full object-cover"
-                />
+               <Image
+  src={product.imageUrl || "/placeholder.png"}
+  alt={product.wigName}
+  className="w-full h-full object-cover"
+/>
+
               </div>
 
               <p className="font-medium text-gray-900 mt-3">{product.wigName}</p>
@@ -384,15 +385,12 @@ const handleSpecialOrderPay = async () => {
             </h2>
 
             <div className="w-full rounded-2xl overflow-hidden bg-white shadow-sm">
-              <Image
-                src={
-                  selectedProduct.imageUrl
-                    ? `https://curls-api.onrender.com${selectedProduct.imageUrl}`
-                    : "/placeholder.png"
-                }
-                alt={selectedProduct.wigName}
-                className="w-full h-full max-h-[60vh] object-cover"
-              />
+             <Image
+  src={selectedProduct.imageUrl || "/placeholder.png"}
+  alt={selectedProduct.wigName}
+  className="w-full h-full max-h-[60vh] object-cover"
+/>
+
             </div>
 
             <p className="mt-4 text-gray-800 font-medium">Full Price:</p>

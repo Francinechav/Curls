@@ -100,12 +100,15 @@ export default function InternationalWigDetails({ params }: { params: Promise<{ 
       <div className="flex flex-col md:flex-row gap-6">
         {/* Left Column: Wig Image + Details */}
         <div className="flex flex-col text-black items-center md:w-1/3 bg-white shadow rounded-2xl p-4">
-          <Image
-            src={wig.imageUrl ? `https://curls-api.onrender.com${wig.imageUrl}` : "/placeholder.jpg"}
-            alt={wig.wigName}
-            className="w-120 h-80 object-cover rounded-xl mb-4 cursor-pointer hover:scale-105 transition duration-300"
-            onClick={() => setShowWigModal(true)}
-          />
+         <Image
+  src={wig.imageUrl || "/placeholder.jpg"} // Cloudinary URL or fallback
+  alt={wig.wigName || "Wig Image"}
+  className="w-120 h-80 object-cover rounded-xl mb-4 cursor-pointer hover:scale-105 transition duration-300"
+  onClick={() => setShowWigModal(true)}
+  width={480} // optional, helps with layout shift
+  height={320}
+/>
+
           <h1 className="text-xl font-bold text-center">{wig.wigName}</h1>
           {wig.description && (
             <p className="text-gray-600 mt-2 text-center text-sm">{wig.description}</p>
@@ -168,10 +171,13 @@ export default function InternationalWigDetails({ params }: { params: Promise<{ 
               ✕
             </button>
             <Image
-              src={wig.imageUrl ? `https://curls-api.onrender.com${wig.imageUrl}` : "/placeholder.jpg"}
-              alt={wig.wigName}
-              className="rounded-xl w-full h-64 mb-4 object-cover"
-            />
+  src={wig.imageUrl || "/placeholder.jpg"} // Cloudinary URL or fallback
+  alt={wig.wigName || "Wig Image"}
+  className="rounded-xl w-full h-64 mb-4 object-cover"
+  width={600}
+  height={400}
+/>
+
             <h2 className="text-2xl font-bold mb-2">{wig.wigName}</h2>
             {wig.description && <p className="text-gray-600 mb-2">{wig.description}</p>}
           </div>

@@ -292,10 +292,13 @@ export default function AdminOrdersPage() {
 
             {selectedWig.imageUrl && (
               <Image
-                src={`https://curls-api.onrender.com${selectedWig.imageUrl}`}
-                alt={selectedWig.wigName}
-                className="mb-2 rounded-lg w-full object-cover max-h-60 mx-auto"
-              />
+  src={selectedWig.imageUrl} // Cloudinary URL
+  alt={selectedWig.wigName || "Wig Image"}
+  className="mb-2 rounded-lg w-full object-cover max-h-60 mx-auto"
+  width={480}   // optional, prevents layout shift
+  height={320}  // optional
+/>
+
             )}
 
             <p className="text-gray-600 text-sm mb-1">

@@ -148,11 +148,6 @@ export default function Rent() {
     );
     
 
-// Add this inside your Rent() component
-
-
-
-
   }
 
   return (
@@ -200,11 +195,12 @@ export default function Rent() {
   >
     {/* Wig image */}
     <div className="w-full aspect-[3/4] rounded-3xl overflow-hidden bg-gray-100">
-      <Image
-        src={wig.imageUrl ? `https://curls-api.onrender.com${wig.imageUrl}` : "/placeholder.png"}
-        alt={wig.wigName}
-        className="w-full h-full object-cover"
-      />
+     <Image
+  src={wig.imageUrl || "/placeholder.png"}
+  alt={wig.wigName}
+  className="w-full h-full object-cover"
+/>
+
     </div>
 
     {/* Status & lengths */}
@@ -291,11 +287,12 @@ export default function Rent() {
 
           {/* RESPONSIVE IMAGE CONTAINER */}
           <div className="w-full aspect-[4/5] rounded-2xl overflow-hidden shadow-sm">
-  <Image
-    src={selectedWig.imageUrl ? `https://curls-api.onrender.com${selectedWig.imageUrl}` : "/placeholder.png"}
-    alt={selectedWig.wigName}
-    className="w-full h-full object-cover"
-  />
+ <Image
+  src={selectedWig.imageUrl || "/placeholder.png"}
+  alt={selectedWig.wigName}
+  className="w-full h-full object-cover"
+/>
+
 </div>
 
 

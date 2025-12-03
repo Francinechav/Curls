@@ -103,13 +103,13 @@ export default function BookingConfirmation() {
             {booking.bridalWig?.imageUrl && (
               <div className="rounded-xl overflow-hidden border shadow-sm">
                 <Image
-                  src={`https://curls-api.onrender.com${booking.bridalWig.imageUrl}`}
-                  alt={booking.bridalWig.wigName}
-                  width={500}
-                  height={300}
-                  className="w-full h-72 object-cover"
-                  unoptimized
-                />
+  src={booking.bridalWig?.imageUrl || ""}
+  alt={booking.bridalWig?.wigName || "Bridal Wig"}
+  width={500}
+  height={300}
+  className="w-full h-72 object-cover"
+/>
+
               </div>
             )}
 

@@ -238,7 +238,13 @@ export default function AdminRentalsPage() {
           <div className="bg-white border border-gray-200 rounded-xl p-5 mt-4 shadow">
             <h2 className="text-lg font-semibold mb-3">{selectedWig.wigName}</h2>
             {selectedWig.imageUrl && (
-              <Image src={`https://curls-api.onrender.com${selectedWig.imageUrl}`} alt={selectedWig.wigName} className="w-full rounded-lg mb-3 object-cover" />
+              <Image
+    src={selectedWig.imageUrl} // Use the full URL from the API directly
+    alt={selectedWig.wigName || "Wig Image"}
+    className="w-full rounded-lg mb-3 object-cover"
+    width={480}   // optional, prevents layout shift
+    height={320}  // optional
+  />
             )}
             <div className="text-gray-700 text-sm space-y-2">
               {selectedWig.Colour && <p><strong>Colour:</strong> {selectedWig.Colour}</p>}

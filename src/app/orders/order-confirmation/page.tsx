@@ -140,13 +140,12 @@ export default function OrderConfirmationPage() {
             {order.product?.imageUrl && (
               <div className="rounded-xl overflow-hidden border shadow-sm">
                 <Image
-                  src={`https://curls-api.onrender.com${order.product.imageUrl}`}
-                  alt={order.product.wigName}
-                  width={800}
-                  height={600}
-                  className="w-full h-72 object-cover"
-                  unoptimized
-                />
+      src={order.product.imageUrl} // direct Cloudinary URL
+      alt={order.product.wigName || "Product Image"}
+      width={800}
+      height={600}
+      className="w-full h-72 object-cover"
+    />
               </div>
             )}
 
