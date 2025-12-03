@@ -1,3 +1,4 @@
+"use client";
 
 import { usePathname } from "next/navigation";
 import Header from "../components/Header";
@@ -7,7 +8,6 @@ import "./globals.css";
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
 
-  // Correct multiple route checks
   const hideHeaderFooter =
     pathname.startsWith("/dashboard") || pathname.startsWith("/login");
 
