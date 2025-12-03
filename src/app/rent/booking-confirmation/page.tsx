@@ -1,8 +1,9 @@
 "use client";
 
 export const dynamic = "force-dynamic";
+
 import React, { useEffect, useState } from "react";
-import { useSearchParams } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import Image from "next/image"; 
 import axios from "axios";
 import {
@@ -13,9 +14,6 @@ import {
   Calendar,
   CreditCard,
 } from "lucide-react";
-
-
-
 
 interface BridalWig {
   wigName: string;
@@ -33,27 +31,27 @@ interface Booking {
   bridalWig?: BridalWig;
 }
 
-
 export default function BookingConfirmation() {
   const [booking, setBooking] = useState<Booking | null>(null);
   const [loading, setLoading] = useState(true);
   const searchParams = useSearchParams();
   const txRef = searchParams.get("tx_ref");
+  const router = useRouter();
 
   useEffect(() => {
     const fetchBooking = async () => {
       if (!txRef) return;
-try {
-  const res = await axios.get<Booking>(
-    `https://curls-api.onrender.com/bookings/by-txref/${txRef}`
-  );
-  setBooking(res.data);
-} catch (err) {
-  console.error(err);
-} finally {
-  setLoading(false);
-}
 
+      try {
+        const res = await axios.get<Booking>(
+          `https://curls-api.onrender.com/bookings/by-txref/${txRef}`
+        );
+        setBooking(res.data);
+      } catch (err) {
+        console.error(err);
+      } finally {
+        setLoading(false);
+      }
     };
 
     fetchBooking();
@@ -69,7 +67,7 @@ try {
 
   if (!booking) {
     return (
-      <div className="flex flex-col  justify-center items-center h-screen text-center px-4">
+      <div className="flex flex-col justify-center items-center h-screen text-center px-4">
         <h1 className="text-3xl font-bold text-red-600 mb-4">
           Booking Not Found ❌
         </h1>
@@ -109,7 +107,10 @@ try {
                 <Image
                   src={`https://curls-api.onrender.com${booking.bridalWig.imageUrl}`}
                   alt={booking.bridalWig.wigName}
+                  width={500}
+                  height={300}
                   className="w-full h-72 object-cover"
+                  unoptimized
                 />
               </div>
             )}
@@ -123,8 +124,8 @@ try {
 
             {/* Back Button */}
             <button
-              className="mt-6  bg-[#856e91] hover:bg-[#594a61] text-white py-3 rounded-xl font-semibold transition"
-              onClick={() => (window.location.href = "/")}
+              className="mt-6 bg-[#856e91] hover:bg-[#594a61] text-white py-3 rounded-xl font-semibold transition"
+              onClick={() => router.push("/")}
             >
               Back to Home
             </button>
