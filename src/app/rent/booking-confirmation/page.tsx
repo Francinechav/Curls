@@ -1,3 +1,5 @@
+"use client"
+
 // src/app/rent/booking-confirmation/page.tsx
 import React from "react";
 import Image from "next/image";
