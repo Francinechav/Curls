@@ -397,9 +397,7 @@ export default function AdminWigsPageFull() {
     };
   }
 
-  const imageSrc = item.imageUrl
-    ? `https://curls-api.onrender.com${item.imageUrl}`
-    : "/placeholder.jpg";
+  const imageSrc = item.imageUrl || "/placeholder.jpg";
 
   const link = isIntl
     ? `/dashboard/international/${item.id}`
