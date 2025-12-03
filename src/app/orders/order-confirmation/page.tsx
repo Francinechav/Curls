@@ -1,16 +1,14 @@
 "use client";
 
 export const dynamic = "force-dynamic";
+export const fetchCache = "force-no-store";
+export const revalidate = 0;
+
 import { useEffect, useState } from "react";
 import Image from "next/image";
 import { useSearchParams } from "next/navigation";
-import {
-  CheckCircle,
-  CreditCard,
-  Package,
-} from "lucide-react";
+import { CheckCircle, CreditCard, Package } from "lucide-react";
 import Link from "next/link";
-
 
 interface Product {
   id: number;
@@ -42,21 +40,27 @@ interface OrderData {
   payment?: Payment;
 }
 
-
 export default function OrderConfirmationPage() {
   const searchParams = useSearchParams();
-  const txRef = searchParams.get("tx_ref");
-  const [orderData, setOrderData] = useState<OrderData | null>(null);
+  const [txRef, setTxRef] = useState<string | null>(null);
 
+  const [orderData, setOrderData] = useState<OrderData | null>(null);
   const [loading, setLoading] = useState(true);
 
+  // ⛔ Load search params only on client
   useEffect(() => {
-    const verifyPayment = async () => {
-      if (!txRef) return;
+    setTxRef(searchParams.get("tx_ref"));
+  }, [searchParams]);
 
+  // ⛔ Verify only after txRef is available
+  useEffect(() => {
+    if (!txRef) return;
+
+    const verify = async () => {
       try {
         const res = await fetch(
-          `https://curls-api.onrender.com/payments/verify/${txRef}`
+          `https://curls-api.onrender.com/payments/verify/${txRef}`,
+          { cache: "no-store" }
         );
         const data = await res.json();
         setOrderData(data);
@@ -67,8 +71,16 @@ export default function OrderConfirmationPage() {
       }
     };
 
-    verifyPayment();
+    verify();
   }, [txRef]);
+
+  if (!txRef) {
+    return (
+      <div className="flex justify-center items-center h-screen text-gray-600 text-lg">
+        Missing transaction reference.
+      </div>
+    );
+  }
 
   if (loading) {
     return (
@@ -85,13 +97,12 @@ export default function OrderConfirmationPage() {
         <p className="text-gray-700 max-w-md">
           We couldn’t verify your payment. Please try again or contact support.
         </p>
-       <Link
-  href="/"
-  className="mt-6 inline-block bg-pink-600 text-white py-2 px-6 rounded-lg font-medium hover:bg-pink-700 transition-colors"
->
-  Go back to Home
-</Link>
-
+        <Link
+          href="/"
+          className="mt-6 inline-block bg-pink-600 text-white py-2 px-6 rounded-lg font-medium hover:bg-pink-700 transition-colors"
+        >
+          Go back to Home
+        </Link>
       </div>
     );
   }
@@ -99,19 +110,16 @@ export default function OrderConfirmationPage() {
   const order = orderData.payment?.order;
 
   if (!order) {
-  return (
-    <div className="flex justify-center items-center h-screen text-gray-600 text-lg">
-      Invalid order data.
-    </div>
-  );
-}
-
+    return (
+      <div className="flex justify-center items-center h-screen text-gray-600 text-lg">
+        Invalid order data.
+      </div>
+    );
+  }
 
   return (
     <section className="min-h-screen bg-white py-10 px-4 flex justify-center">
       <div className="bg-white shadow-2xl rounded-2xl max-w-5xl w-full p-6 md:p-10">
-
-        {/* HEADER */}
         <div className="flex items-center gap-3 mb-8">
           <CheckCircle className="text-[#856e91] w-10 h-10" />
           <div>
@@ -124,22 +132,18 @@ export default function OrderConfirmationPage() {
           </div>
         </div>
 
-        {/* MAIN GRID */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-
-          {/* LEFT SIDE — PRODUCT IMAGE + STATUS */}
           <div className="flex flex-col">
-
-            {order?.product?.imageUrl && (
+            {order.product?.imageUrl && (
               <div className="rounded-xl overflow-hidden border shadow-sm">
                 <Image
-  src={`https://curls-api.onrender.com${order.product.imageUrl}`}
-  alt={order.product.wigName}
-  width={800}
-  height={600}
-  className="w-full h-72 object-cover"
-  unoptimized
-/>
+                  src={`https://curls-api.onrender.com${order.product.imageUrl}`}
+                  alt={order.product.wigName}
+                  width={800}
+                  height={600}
+                  className="w-full h-72 object-cover"
+                  unoptimized
+                />
               </div>
             )}
 
@@ -149,22 +153,20 @@ export default function OrderConfirmationPage() {
               </span>
             </div>
 
-<Link
-  href="/"
-  className="mt-6 inline-block bg-pink-600 text-white py-2 px-6 rounded-lg font-medium hover:bg-pink-700 transition-colors"
->
-  Go back to Home
-</Link>
+            <Link
+              href="/"
+              className="mt-6 inline-block bg-pink-600 text-white py-2 px-6 rounded-lg font-medium hover:bg-pink-700 transition-colors"
+            >
+              Go back to Home
+            </Link>
           </div>
-          
-          {/* RIGHT SIDE — ORDER SUMMARY */}
+
           <div className="bg-gray-50 rounded-xl p-6 shadow-inner">
             <h2 className="text-xl font-semibold text-[#856e91] mb-4">
               Order Summary
             </h2>
 
             <div className="space-y-4 text-gray-700">
-
               <div className="flex items-center gap-3">
                 <Package className="w-5 h-5 text-gray-500" />
                 <p>
@@ -214,10 +216,9 @@ export default function OrderConfirmationPage() {
                 <p>
                   <strong>Phone:</strong> {order.phoneNumber}
                 </p>
-
                 <p>
-               <strong>District:</strong> {order.district || "N/A"}
-               </p>
+                  <strong>District:</strong> {order.district || "N/A"}
+                </p>
               </div>
 
               <p className="mt-4 text-sm italic text-gray-500">
