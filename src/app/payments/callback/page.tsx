@@ -26,7 +26,7 @@ export default function PaymentCallbackPage() {
 
     const verifyPayment = async () => {
         try {
-      const res = await fetch("https://curls-api.onrender.com/orders/admin/all");
+      const res = await fetch(`https://curls-api.onrender.com/payments/verify/${txRef}`);
       const data = await res.json();
 
         if (data.paychangu_status === "success") {
