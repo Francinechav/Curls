@@ -1,5 +1,6 @@
 "use client"
-
+export const dynamic = "force-dynamic";
+export const fetchCache = "force-no-store";
 // src/app/rent/booking-confirmation/page.tsx
 import React from "react";
 import Image from "next/image";
