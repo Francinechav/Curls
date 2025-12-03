@@ -1,19 +1,8 @@
-"use client";
-
-export const dynamic = "force-dynamic";
-
-import React, { useEffect, useState } from "react";
-import { useRouter, useSearchParams } from "next/navigation";
-import Image from "next/image"; 
-import axios from "axios";
-import {
-  CheckCircle,
-  User,
-  Mail,
-  Phone,
-  Calendar,
-  CreditCard,
-} from "lucide-react";
+// src/app/rent/booking-confirmation/page.tsx
+import React from "react";
+import Image from "next/image";
+import { CheckCircle, User, Mail, Phone, Calendar, CreditCard } from "lucide-react";
+import { useRouter } from "next/navigation";
 
 interface BridalWig {
   wigName: string;
@@ -31,46 +20,55 @@ interface Booking {
   bridalWig?: BridalWig;
 }
 
-export default function BookingConfirmation() {
-  const [booking, setBooking] = useState<Booking | null>(null);
-  const [loading, setLoading] = useState(true);
-  const searchParams = useSearchParams();
-  const txRef = searchParams.get("tx_ref");
+interface PageProps {
+  searchParams: { tx_ref?: string };
+}
+
+// Wrap interactive UI in a client component
+"use client";
+function BookingActions({ txRef }: { txRef: string }) {
   const router = useRouter();
+  return (
+    <div className="mt-6">
+      <button
+        className="bg-[#856e91] hover:bg-[#594a61] text-white py-3 px-6 rounded-xl font-semibold transition"
+        onClick={() => router.push("/")}
+      >
+        Back to Home
+      </button>
+    </div>
+  );
+}
 
-  useEffect(() => {
-    const fetchBooking = async () => {
-      if (!txRef) return;
+// Server component for fetching data
+export default async function BookingConfirmation({ searchParams }: PageProps) {
+  const txRef = searchParams.tx_ref;
 
-      try {
-        const res = await axios.get<Booking>(
-          `https://curls-api.onrender.com/bookings/by-txref/${txRef}`
-        );
-        setBooking(res.data);
-      } catch (err) {
-        console.error(err);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchBooking();
-  }, [txRef]);
-
-  if (loading) {
+  if (!txRef) {
     return (
-      <div className="flex justify-center items-center h-screen text-gray-600 text-lg">
-        Verifying your booking...
+      <div className="flex items-center justify-center h-screen text-red-600">
+        Booking reference is missing.
       </div>
     );
+  }
+
+  let booking: Booking | null = null;
+
+  try {
+    const res = await fetch(`https://curls-api.onrender.com/bookings/by-txref/${txRef}`, {
+      cache: "no-store", // ensures fresh data each request
+    });
+    if (!res.ok) throw new Error("Booking not found");
+    booking = await res.json();
+  } catch (err) {
+    console.error(err);
+    booking = null;
   }
 
   if (!booking) {
     return (
       <div className="flex flex-col justify-center items-center h-screen text-center px-4">
-        <h1 className="text-3xl font-bold text-red-600 mb-4">
-          Booking Not Found ❌
-        </h1>
+        <h1 className="text-3xl font-bold text-red-600 mb-4">Booking Not Found ❌</h1>
         <p className="text-gray-700">
           We could not find your booking. Please check your details or contact support.
         </p>
@@ -122,13 +120,8 @@ export default function BookingConfirmation() {
               </span>
             </div>
 
-            {/* Back Button */}
-            <button
-              className="mt-6 bg-[#856e91] hover:bg-[#594a61] text-white py-3 rounded-xl font-semibold transition"
-              onClick={() => router.push("/")}
-            >
-              Back to Home
-            </button>
+            {/* Client-only back button */}
+            <BookingActions txRef={booking.txRef} />
           </div>
 
           {/* RIGHT SIDE — BOOKING SUMMARY */}
