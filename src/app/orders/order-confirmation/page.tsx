@@ -1,5 +1,8 @@
 "use client";
 
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
+
 import { useEffect, useState } from "react";
 import Image from "next/image";
 import { useSearchParams } from "next/navigation";
@@ -127,6 +130,10 @@ export default function OrderConfirmationPage() {
             </p>
           </div>
         </div>
+
+
+        {!txRef && <></> }
+
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
           <div className="flex flex-col">

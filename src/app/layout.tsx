@@ -1,3 +1,5 @@
+export const dynamic = "force-dynamic";
+
 import "./globals.css";
 import LayoutWrapper from "../components/LayoutWrapper";
 
