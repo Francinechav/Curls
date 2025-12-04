@@ -37,7 +37,7 @@ export default function LoginPage() {
         return;
       }
 
-      localStorage.setItem("token", data.access_token);
+      document.cookie = `token=${data.access_token}; path=/; max-age=86400`;
       router.push("/dashboard");
     } catch (err) {
       setError("Something went wrong.");
