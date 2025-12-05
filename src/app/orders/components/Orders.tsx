@@ -41,6 +41,8 @@ export default function Orders() {
   const [agree, setAgree] = useState(false);
   const [loading, setLoading] = useState(true);
   const [pricingModalOpen, setPricingModalOpen] = useState(false);
+  const [payLoading, setPayLoading] = useState(false);
+
 
 
   // Customer info
@@ -159,47 +161,57 @@ const getSpecialOrderPrice = () => {
 
   // Handle International Product Payment
   const handlePayNow = async () => {
-    if (!selectedProduct) return alert("Please select a product.");
-    if (!customer.first_name || !customer.last_name || !customer.email || !customer.phone ||
+  if (!selectedProduct) return alert("Please select a product.");
+  if (!customer.first_name || !customer.last_name || !customer.email || !customer.phone ||
     !customer.district )
-      return alert("Please fill in your contact details.");
-    if (!agree) return alert("You must accept Terms & Conditions.");
+    return alert("Please fill in your contact details.");
+  if (!agree) return alert("You must accept Terms & Conditions.");
 
-    try {
-      const depositAmount = parseFloat(selectedProduct.price)
-      const res = await fetch("https://curls-api.onrender.com/payments/initiate", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          type: "international",
-          amount: depositAmount,
-          currency: "MWK",
-          first_name: customer.first_name,
-          last_name: customer.last_name,
-          email: customer.email,
-          phoneNumber: customer.phone,
-          meta: { productId: selectedProduct.id , district: customer.district,},
-        }),
-      });
-      const data = await res.json();
-      if (data.checkout_url) window.location.href = data.checkout_url;
-      else alert("Failed to initiate payment.");
-    } catch (err) {
-      console.error(err);
-      alert("Something went wrong.");
-    }
-  };
+  setPayLoading(true);
+
+  try {
+    const depositAmount = parseFloat(selectedProduct.price);
+
+    const res = await fetch("https://curls-api.onrender.com/payments/initiate", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        type: "international",
+        amount: depositAmount,
+        currency: "MWK",
+        first_name: customer.first_name,
+        last_name: customer.last_name,
+        email: customer.email,
+        phoneNumber: customer.phone,
+        meta: { productId: selectedProduct.id, district: customer.district },
+      }),
+    });
+
+    const data = await res.json();
+    if (data.checkout_url) window.location.href = data.checkout_url;
+    else alert("Failed to initiate payment.");
+  } catch (err) {
+    console.error(err);
+    alert("Something went wrong.");
+  } finally {
+    setPayLoading(false);
+  }
+};
+
 
   // Handle Special Order Payment
 const handleSpecialOrderPay = async () => {
   const { texture, colour, length, first_name, last_name, email, phone, district } = specialOrder;
   if (!texture || !colour || !length) return alert("Please fill texture, colour, and length.");
-  if (!first_name || !last_name || !email || !phone || !district) return alert("Please fill contact details including district.");
+  if (!first_name || !last_name || !email || !phone || !district)
+    return alert("Please fill contact details including district.");
   if (!agree) return alert("You must accept Terms & Conditions.");
 
+  setPayLoading(true);
+
   try {
-    const totalAmount = getSpecialOrderPrice(); // already includes shipping
-    const depositAmount = totalAmount / 2; // 50% deposit (you can Math.ceil if you want rounding)
+    const totalAmount = getSpecialOrderPrice();
+    const depositAmount = totalAmount / 2;
 
     const res = await fetch("https://curls-api.onrender.com/payments/initiate", {
       method: "POST",
@@ -212,30 +224,27 @@ const handleSpecialOrderPay = async () => {
         last_name,
         email,
         phoneNumber: phone,
-        meta: { 
+        meta: {
           type: "special",
-          texture, 
-          colour, 
+          texture,
+          colour,
           length,
           totalPrice: totalAmount,
           shipping: SPECIAL_SHIPPING_FEE,
           deposit: depositAmount,
-          district, 
-          customer: {
-            first_name,
-            last_name,
-            email,
-            phone
-          }
+          district,
         },
       }),
     });
+
     const data = await res.json();
     if (data.checkout_url) window.location.href = data.checkout_url;
     else alert("Failed to initiate payment.");
   } catch (err) {
     console.error(err);
     alert("Something went wrong.");
+  } finally {
+    setPayLoading(false);
   }
 };
 
@@ -570,16 +579,21 @@ const handleSpecialOrderPay = async () => {
 
         {/* BUTTON */}
         <button
-          disabled={!agree}
-          className={`w-full py-3 rounded-xl font-semibold text-white ${
-            !agree ? "bg-gray-300" : "bg-[#856e91] hover:bg-[#6b5475]"
-          }`}
-          onClick={
-            orderType === "international" ? handlePayNow : handleSpecialOrderPay
-          }
-        >
-          Pay Deposit
-        </button>
+  disabled={!agree || payLoading}
+  className={`w-full py-3 rounded-xl font-semibold text-white flex items-center justify-center gap-2 ${
+    !agree || payLoading ? "bg-gray-300 cursor-not-allowed" : "bg-[#856e91] hover:bg-[#6b5475]"
+  }`}
+  onClick={orderType === "international" ? handlePayNow : handleSpecialOrderPay}
+>
+  {payLoading ? (
+    <span className="animate-pulse">Loading...</span>
+  ) : orderType === "international" ? (
+    "Pay"
+  ) : (
+    "Pay Deposit"
+  )}
+</button>
+
       </div>
     </div>
   </div>
