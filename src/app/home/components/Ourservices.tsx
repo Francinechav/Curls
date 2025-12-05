@@ -1,6 +1,8 @@
-import Link from "next/link";
+"use client";
 
-import Image from "next/image"; 
+import Link from "next/link";
+import Image from "next/image";
+
 export default function Ourservices() {
   return (
     <section className="w-full px-6 md:px-12 lg:px-20 py-20 bg-[#e6ddeb]">
@@ -25,39 +27,40 @@ export default function Ourservices() {
         </div>
 
         {/* IMAGE 1 */}
-      <div className="
-  bg-gray-300 rounded-3xl w-full 
-  aspect-[4/3]              /* Mobile */
-  sm:aspect-[16/10]         /* Larger phones + tablets */
-  md:h-[360px]              /* Medium screens */
-  lg:h-[420px]              /* Desktop */
-  flex items-center justify-center overflow-hidden
-">
-  <Image
-    src="/wigb.jpeg"
-    alt="Bridal wig rentals"
-    className="w-full h-full object-cover rounded-3xl"
-  />
-</div>
-
-
-
+        <div className="
+          relative                       /* Required for Image fill */
+          bg-gray-300 rounded-3xl w-full 
+          aspect-[4/3]                    /* Mobile */
+          sm:aspect-[16/10]               /* Larger phones + tablets */
+          md:h-[360px]                     /* Medium screens */
+          lg:h-[420px]                     /* Desktop */
+          overflow-hidden
+        ">
+          <Image
+            src="/wigb.jpeg"
+            alt="Bridal wig rentals"
+            fill
+            className="object-cover rounded-3xl"
+          />
+        </div>
 
         {/* IMAGE 2 */}
-       <div className="
-  bg-gray-300 rounded-3xl w-full 
-  aspect-[4/3]              /* Mobile */
-  sm:aspect-[16/10]         /* Larger phones + tablets */
-  md:h-[420px]              /* Medium screens */
-  lg:h-[500px]              /* Desktop */
-  flex items-center justify-center overflow-hidden
-">
-  <Image
-    src="/wig8.jpeg"
-    alt="Luxury wig sales"
-    className="w-full h-full object-cover rounded-3xl"
-  />
-</div>
+        <div className="
+          relative
+          bg-gray-300 rounded-3xl w-full 
+          aspect-[4/3]
+          sm:aspect-[16/10]
+          md:h-[420px]
+          lg:h-[500px]
+          overflow-hidden
+        ">
+          <Image
+            src="/wig8.jpeg"
+            alt="Luxury wig sales"
+            fill
+            className="object-cover rounded-3xl"
+          />
+        </div>
 
       </div>
     </section>

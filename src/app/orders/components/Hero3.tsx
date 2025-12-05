@@ -33,15 +33,36 @@ export default function Hero3() {
       </div>
 
       {/* --- CENTER TEXT --- */}
-      <div className="max-w-4xl mx-auto text-center py-32 relative z-20">
-        <h1 className="text-5xl md:text-6xl font-serif italic text-gray-900">
-          Own Elegance.<br />
-          Embrace Beauty..
-        </h1>
-        <p className="mt-4 text-lg text-[#767171]">
-          Shop your dream wig with confidence.
-        </p>
-      </div>
+      <div className="max-w-4xl mx-auto text-center py-20 sm:py-28 md:py-32 px-4 relative z-20">
+
+  <h1
+    className="
+      text-3xl          /* Mobile */
+      sm:text-4xl       /* Small screens */
+      md:text-6xl       /* Desktop */
+      font-serif italic 
+      text-gray-900 
+      leading-tight
+    "
+  >
+    Own Elegance.<br />
+    Embrace Beauty.
+  </h1>
+
+  <p
+    className="
+      mt-3 
+      text-base         /* Mobile */
+      sm:text-lg        /* Small screens */
+      md:text-xl        /* Desktop */
+      text-[#767171]
+    "
+  >
+    Shop your dream wig with confidence.
+  </p>
+
+</div>
+
     </section>
   );
 }
