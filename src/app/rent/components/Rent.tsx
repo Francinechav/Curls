@@ -535,7 +535,7 @@ export default function Rent() {
   `}
   onClick={handlePayNow}
 >
-  {submitting ? "Processing..." : "Pay Now"}
+  {submitting ? "Loading..." : "Pay Now"}
 </button>
 
 
