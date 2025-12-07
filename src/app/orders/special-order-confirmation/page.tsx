@@ -18,13 +18,20 @@ interface SpecialOrder {
   texture: string;
   colour: string;
   length: string;
-  description: string;
+  description?: string;
 }
 
 interface SpecialOrderData {
   paychangu_status: "success" | "failed";
-  order?: SpecialOrder;
+
+  payment?: {
+    specialOrder?: SpecialOrder;
+  };
+
+  order?: SpecialOrder; // fallback for future consistency
 }
+
+
 
 export default function SpecialOrderConfirmation() {
   const router = useRouter();
@@ -83,7 +90,10 @@ export default function SpecialOrderConfirmation() {
     );
   }
 
-  const order = orderData.order;
+ const order =
+  orderData.payment?.specialOrder ??
+  orderData.order ?? // keep fallback
+  null;
 
   if (!order) {
     return (
