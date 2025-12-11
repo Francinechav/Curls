@@ -64,15 +64,15 @@ export default function AdminRentalsPage() {
   useEffect(() => {
   const token = localStorage.getItem("token");
 
-  console.log("TOKEN BEING SENT:", token); // <-- debug
+  console.log("TOKEN BEING SENT:", token); 
 
   fetch("https://curls-api.onrender.com/bookings/admin/all", {
-    method: "GET",
-    headers: {
-      "Content-Type": "application/json",
-      "Authorization": `Bearer ${token}`,
-    }
-  })
+  method: "GET",
+  headers: {
+    "Content-Type": "application/json",
+    "Authorization": `Bearer ${token}`,
+  }
+})
     .then((res) => {
       if (!res.ok) {
         console.error("Server error:", res.status);
