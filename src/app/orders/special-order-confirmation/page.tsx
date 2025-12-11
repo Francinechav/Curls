@@ -90,18 +90,15 @@ export default function SpecialOrderConfirmation() {
     );
   }
 
- const order =
-  orderData.payment?.specialOrder ??
-  orderData.order ?? // keep fallback
-  null;
+ const order = orderData.order ?? null;
 
-  if (!order) {
-    return (
-      <div className="flex justify-center items-center h-screen text-gray-600 text-lg">
-        Invalid order data.
-      </div>
-    );
-  }
+if (!order) {
+  return (
+    <div className="flex justify-center items-center h-screen text-gray-600 text-lg">
+      Invalid order data.
+    </div>
+  );
+}
 
   return (
     <section className="min-h-screen bg-white py-10 px-4 flex justify-center">
