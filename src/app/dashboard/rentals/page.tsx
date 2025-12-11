@@ -64,18 +64,22 @@ export default function AdminRentalsPage() {
   useEffect(() => {
   const token = localStorage.getItem("token");
 
-  console.log("TOKEN BEING SENT:", token); 
+  if (!token) {
+    console.error("No token found in localStorage! Make sure user is logged in.");
+    return;
+  }
 
   fetch("https://curls-api.onrender.com/bookings/admin/all", {
-  method: "GET",
-  headers: {
-    "Content-Type": "application/json",
-    "Authorization": `Bearer ${token}`,
-  }
-})
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+      "Authorization": `Bearer ${token}`, // only if token exists
+    },
+  })
     .then((res) => {
       if (!res.ok) {
         console.error("Server error:", res.status);
+        return;
       }
       return res.json();
     })
@@ -88,8 +92,6 @@ export default function AdminRentalsPage() {
     })
     .catch(console.error);
 }, []);
-
-
 
   const filteredBookings = bookings.filter((b) => {
     const fullName = `${b.firstName} ${b.lastName}`.toLowerCase();
