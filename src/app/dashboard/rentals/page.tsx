@@ -62,11 +62,24 @@ export default function AdminRentalsPage() {
   const isMobile = useIsMobile();
 
   useEffect(() => {
-    fetch("https://curls-api.onrender.com/bookings/admin/all")
-      .then((res) => res.json())
-      .then((data) => setBookings(data))
-      .catch(console.error);
-  }, []);
+  fetch("https://curls-api.onrender.com/bookings/admin/all", {
+    method: "GET",
+    credentials: "include", // <-- SEND COOKIE WITH REQUEST
+    headers: {
+      "Content-Type": "application/json",
+    }
+  })
+    .then((res) => res.json())
+    .then((data) => {
+      if (!Array.isArray(data)) {
+        console.error("Unexpected data:", data);
+        return;
+      }
+      setBookings(data);
+    })
+    .catch(console.error);
+}, []);
+
 
   const filteredBookings = bookings.filter((b) => {
     const fullName = `${b.firstName} ${b.lastName}`.toLowerCase();
