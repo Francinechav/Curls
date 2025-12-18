@@ -21,13 +21,12 @@ interface SpecialOrder {
   description?: string;
 }
 
-interface SpecialOrderData {
-  paychangu_status: "success" | "failed";
-  payment?: {
-    specialOrder?: SpecialOrder;
-  };
-  order?: SpecialOrder;
+interface VerifyPaymentResponse {
+  paychangu_status: "success" | "failed" | "pending";
+  order: SpecialOrder | null;
+  orderType: "special" | "normal" | null;
 }
+
 
 
 export default function SpecialOrderConfirmation() {
@@ -35,7 +34,9 @@ export default function SpecialOrderConfirmation() {
   const searchParams = useSearchParams();
   const txRef = searchParams.get("tx_ref");
 
-  const [orderData, setOrderData] = useState<SpecialOrderData | null>(null);
+ const [orderData, setOrderData] =
+  useState<VerifyPaymentResponse | null>(null);
+
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -93,10 +94,8 @@ setOrderData(data);
     );
   }
 
- const order =
-  orderData.payment?.specialOrder ??
-  orderData.order ??
-  null;
+const order = orderData?.order ?? null;
+
 
 
 if (!order) {
