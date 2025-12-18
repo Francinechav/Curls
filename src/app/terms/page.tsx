@@ -13,7 +13,7 @@ export default function Terms() {
             </span>
           </div>
         </div>
-
+   
         {/* CONTENT */}
         <div className="px-6 py-5 max-h-[65vh] overflow-y-auto text-gray-800 space-y-7">
 

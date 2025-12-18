@@ -23,14 +23,11 @@ interface SpecialOrder {
 
 interface SpecialOrderData {
   paychangu_status: "success" | "failed";
-
   payment?: {
     specialOrder?: SpecialOrder;
   };
-
-  order?: SpecialOrder; // fallback for future consistency
+  order?: SpecialOrder;
 }
-
 
 
 export default function SpecialOrderConfirmation() {
@@ -51,6 +48,9 @@ export default function SpecialOrderConfirmation() {
         );
         const data = await res.json();
         console.log("🔍 SPECIAL ORDER RESPONSE:", data);
+        console.log("ORDER DATA", orderData);
+        console.log("SPECIAL ORDER", orderData?.payment?.specialOrder);
+
         setOrderData(data);
       } catch (err) {
         console.error("Error verifying payment:", err);
@@ -90,7 +90,11 @@ export default function SpecialOrderConfirmation() {
     );
   }
 
- const order = orderData.order ?? null;
+ const order =
+  orderData.payment?.specialOrder ??
+  orderData.order ??
+  null;
+
 
 if (!order) {
   return (
