@@ -47,11 +47,14 @@ export default function SpecialOrderConfirmation() {
           `https://curls-api.onrender.com/payments/verify/${txRef}`
         );
         const data = await res.json();
-        console.log("🔍 SPECIAL ORDER RESPONSE:", data);
-        console.log("ORDER DATA", orderData);
-        console.log("SPECIAL ORDER", orderData?.payment?.specialOrder);
 
-        setOrderData(data);
+console.log("🔍 FULL VERIFY RESPONSE:", data);
+console.log("🧾 PAYMENT:", data?.payment);
+console.log("✨ SPECIAL ORDER FROM RESPONSE:", data?.payment?.specialOrder);
+console.log("📦 ORDER FROM RESPONSE:", data?.order);
+
+setOrderData(data);
+
       } catch (err) {
         console.error("Error verifying payment:", err);
       } finally {
