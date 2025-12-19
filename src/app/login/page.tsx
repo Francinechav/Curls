@@ -15,6 +15,7 @@ export default function LoginPage() {
     e.preventDefault();
     setLoading(true);
     setError("");
+      console.log("Attempting login with email:", email);
 
     try {
       const res = await fetch("https://curls-api.onrender.com/auth/login", {
@@ -23,25 +24,32 @@ export default function LoginPage() {
         body: JSON.stringify({ email, password }),
       });
 
+        console.log("Raw response status:", res.status, "OK?", res.ok);
+
       const data = await res.json();
+        console.log("Parsed login response:", data);
 
       console.log("Login response:", res.status, data);
 
       if (!res.ok) {
+          console.log("Login failed with message:", data.message);
         setError(data.message || "Login failed");
         return;
       }
-
+        console.log("User role from backend:", data.role);
       if (data.role !== "admin") {
+         console.log("Access denied: not admin");
         setError("Only admins can access this system.");
         return;
       }
 
       if (typeof window !== "undefined") {
         localStorage.setItem("token", data.access_token);
+        console.log("Token stored in localStorage");
       }
-
-      await router.push("/dashboard"); // ensure redirect
+        console.log("Redirecting to dashboard...");
+      await router.push("/dashboard"); 
+         console.log("router.push called"); /// ensure redirect
     } catch (err) {
       console.error(err);
       setError("Something went wrong.");
