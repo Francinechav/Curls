@@ -33,8 +33,11 @@ interface Payment {
 
 interface OrderData {
   paychangu_status: "success" | "failed";
-  payment?: Payment;
+  order?: Order;
+  orderType?: "normal" | "special";
+  note?: string;
 }
+
 
 export default function OrderConfirmationPage() {
   const searchParams = useSearchParams();
@@ -103,7 +106,8 @@ export default function OrderConfirmationPage() {
     );
   }
 
-  const order = orderData.payment?.order;
+const order = orderData.order;
+
 
   if (!order) {
     return (
