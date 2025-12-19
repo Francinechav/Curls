@@ -1,4 +1,5 @@
 "use client";
+import { jwtDecode } from "jwt-decode";
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
@@ -11,41 +12,43 @@ export default function LoginPage() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
-  const handleLogin = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setLoading(true);
-    setError("");
+const handleLogin = async (e: React.FormEvent) => {
+  e.preventDefault();
+  setLoading(true);
+  setError("");
 
-    try {
-      const res = await fetch("https://curls-api.onrender.com/auth/login", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, password }),
-      });
+  try {
+    const res = await fetch("https://curls-api.onrender.com/auth/login", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ email, password }),
+    });
 
-      const data = await res.json();
+    const data = await res.json();
 
-      if (!res.ok) {
-        setError(data.message || "Login failed");
-        setLoading(false);
-        return;
-      }
-
-      if (data.role !== "admin") {
-        setError("Only admins can access this system.");
-        setLoading(false);
-        return;
-      }
-
-      localStorage.setItem("token", data.access_token);
-
-      router.push("/dashboard");
-    } catch (err) {
-      setError("Something went wrong.");
+    if (!res.ok) {
+      setError(data.message || "Login failed");
+      setLoading(false);
+      return;
     }
 
+    const decoded: any = jwtDecode(data.access_token);
+
+    if (decoded.role !== "admin") {
+      setError("Only admins can access this system.");
+      setLoading(false);
+      return;
+    }
+
+    localStorage.setItem("token", data.access_token);
+    router.push("/dashboard");
+
+  } catch (err) {
+    setError("Something went wrong.");
+  } finally {
     setLoading(false);
-  };
+  }
+};
 
   return (
     <div className="min-h-screen md:min-h-[100vh] bg-[#e7e0f1] flex items-center justify-center py-10 px-4">
