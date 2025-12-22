@@ -24,20 +24,46 @@ export default function AdminHome() {
 
   const adminName = "Francine";
 
-  useEffect(() => {
-    const loadDashboard = async () => {
-      const res = await fetch("https://curls-api.onrender.com/payments/admin/summary");
-      const data = await res.json();
+ useEffect(() => {
+  const loadDashboard = async () => {
+    const token = localStorage.getItem("token");
+    console.log("📦 Dashboard token:", token);
 
-      setTotalRevenue(data.totalRevenue);
-      setTotalBookings(data.totalBookings);
-      setTotalOrders(data.totalOrders);
-      setMonthlyTotals(data.monthlyTotals);
-      setTransactions(data.recentPayments);
-    };
+    if (!token) {
+      console.log("❌ No token found, redirecting to login");
+      window.location.href = "/login";
+      return;
+    }
 
-    loadDashboard();
-  }, []);
+    const res = await fetch(
+      "https://curls-api.onrender.com/payments/admin/summary",
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+
+    console.log("📡 Dashboard response status:", res.status);
+
+    if (!res.ok) {
+      console.log("❌ Unauthorized dashboard access");
+      window.location.href = "/login";
+      return;
+    }
+
+    const data = await res.json();
+
+    setTotalRevenue(data.totalRevenue);
+    setTotalBookings(data.totalBookings);
+    setTotalOrders(data.totalOrders);
+    setMonthlyTotals(data.monthlyTotals);
+    setTransactions(data.recentPayments);
+  };
+
+  loadDashboard();
+}, []);
+
 
   return (
     <div className="p-4 md:p-6 bg-white min-h-screen font-inter space-y-8">
