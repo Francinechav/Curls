@@ -1,6 +1,16 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 
+function decodeJwt(token: string) {
+  try {
+    const payload = token.split(".")[1];
+    const decoded = JSON.parse(atob(payload));
+    return decoded;
+  } catch {
+    return null;
+  }
+}
+
 export function middleware(req: NextRequest) {
   const token = req.cookies.get("token")?.value;
 
@@ -8,9 +18,9 @@ export function middleware(req: NextRequest) {
     return NextResponse.redirect(new URL("/login", req.url));
   }
 
-  const payload = JSON.parse(Buffer.from(token.split(".")[1], "base64").toString());
+  const payload = decodeJwt(token);
 
-  if (payload.role !== "admin") {
+  if (!payload || payload.role !== "admin") {
     return NextResponse.redirect(new URL("/login", req.url));
   }
 
